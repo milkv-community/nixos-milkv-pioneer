@@ -1,0 +1,39 @@
+From ffb4984967afa9b846bdfafc853b2f682170f636 Mon Sep 17 00:00:00 2001
+From: silvanshade <silvanshade@users.noreply.github.com>
+Date: Wed, 17 Apr 2024 13:25:39 -0600
+Subject: [PATCH] Fix maybe-uninitialized warnings
+
+---
+ lib/sbi/riscv_asm.c                    | 2 +-
+ lib/utils/reset/fdt_reset_sophgo_wdt.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sbi/riscv_asm.c b/lib/sbi/riscv_asm.c
+index 05b8c7c..245a98a 100644
+--- a/lib/sbi/riscv_asm.c
++++ b/lib/sbi/riscv_asm.c
+@@ -287,7 +287,7 @@ int pmp_disable(unsigned int n)
+ 
+ int is_pmp_entry_mapped(unsigned long entry)
+ {
+-	unsigned long prot;
++	unsigned long prot = 0;
+ 	unsigned long addr;
+ 	unsigned long log2len;
+ 
+diff --git a/lib/utils/reset/fdt_reset_sophgo_wdt.c b/lib/utils/reset/fdt_reset_sophgo_wdt.c
+index 55d7713..84acc70 100644
+--- a/lib/utils/reset/fdt_reset_sophgo_wdt.c
++++ b/lib/utils/reset/fdt_reset_sophgo_wdt.c
+@@ -68,7 +68,7 @@ static int sophgo_wdt_system_get_top_base(void *fdt,
+ 		 int nodeoff, unsigned long *addr)
+ {
+ 	const fdt32_t *val;
+-	int len, noff;
++	int len, noff = 0;
+ 
+ 	val = fdt_getprop(fdt, nodeoff, "subctrl-syscon", &len);
+ 	if (val || len >= sizeof(fdt32_t)) {
+-- 
+2.44.0
+

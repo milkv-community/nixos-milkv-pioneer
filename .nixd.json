@@ -1,0 +1,7 @@
+{
+  "eval": {
+    "target": {
+      "args": ["-f", "default.nix"]
+    }
+  }
+}
