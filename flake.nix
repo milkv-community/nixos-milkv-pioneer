@@ -14,8 +14,6 @@
     ];
     extra-substituters = [
       "https://cache.nixos.org"
-      "https://cuda-maintainers.cachix.org"
-      "https://hyprland.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
@@ -55,13 +53,69 @@
           pkgs = import inputs.nixpkgs ({ inherit system; } // overrides);
         in
         f pkgs);
+    in
+    let
       treefmtEval = eachSystem (system: inputs.treefmt-nix.lib.evalModule inputs.nixpkgs.legacyPackages.${system} ./treefmt.nix);
     in
-    {
+    rec {
       formatter = eachSystemPkgs { } (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
 
       checks = eachSystemPkgs { } (pkgs: {
         formatting = treefmtEval.${pkgs.system}.config.build.check inputs.self;
       });
+
+      packages = eachSystemPkgs { } (pkgs: {
+        sophgo-bootloader-riscv = pkgs.fetchFromGitHub {
+          owner = "milkv-community";
+          repo = "sophgo-bootloader-riscv";
+          rev = "01dc52c";
+          hash = "sha256-qho2HKgVXVN+s/QZQ15uPFgCpCwS91P4+T4cPZ/eLDc=";
+          fetchSubmodules = true;
+        };
+        sophgo-edk2 = pkgs.fetchFromGitHub {
+          owner = "milkv-community";
+          repo = "sophgo-edk2";
+          rev = "cc3706b";
+          hash = "sha256-2LH41Mpk7E4Wkiel1ZqMwPiq5vcaB97NqzEJNkVe62k=";
+          fetchSubmodules = true;
+        };
+        sophgo-opensbi = pkgs.fetchFromGitHub {
+          owner = "milkv-community";
+          repo = "sophgo-opensbi";
+          rev = "3745939";
+          hash = "sha256-UXsAKXO0fBjHkkanZlB0led9CiVeqa01dTM4r7D9dzs=";
+          fetchSubmodules = true;
+        };
+        sophgo-zsbl = pkgs.fetchFromGitHub {
+          owner = "milkv-community";
+          repo = "sophgo-zsbl";
+          rev = "cc80627";
+          hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
+          fetchSubmodules = true;
+        };
+      });
+
+      devShells = eachSystemPkgs { } (pkgs:
+        let
+          sophgo-bootloader-riscv = packages.${pkgs.system}.sophgo-bootloader-riscv;
+          sophgo-edk2 = packages.${pkgs.system}.sophgo-edk2;
+          sophgo-opensbi = packages.${pkgs.system}.sophgo-opensbi;
+          sophgo-zsbl = packages.${pkgs.system}.sophgo-zsbl;
+        in
+        {
+          default = pkgs.mkShell {
+            REPO_SOPHGO_BOOTLOADER_RISCV = sophgo-bootloader-riscv;
+            REPO_SOPHGO_EDK2 = sophgo-edk2;
+            REPO_SOPHGO_OPENSBI = sophgo-opensbi;
+            REPO_SOPHGO_ZSBL = sophgo-zsbl;
+            buildInputs = [
+              sophgo-bootloader-riscv
+              sophgo-edk2
+              sophgo-opensbi
+              sophgo-zsbl
+              pkgs.go
+            ];
+          };
+        });
     };
 }
