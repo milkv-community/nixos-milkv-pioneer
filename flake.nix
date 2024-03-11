@@ -1,6 +1,5 @@
 {
-  description = "A template that shows all standard flake outputs";
-
+  description = "A Nix flake for building the Milk-V Pioneer BSP";
 
   nixConfig = {
     accept-flake-config = true;
@@ -53,6 +52,7 @@
           pkgs = import inputs.nixpkgs ({ inherit system; } // overrides);
         in
         f pkgs);
+      recurseIntoAttrs = attrs: attrs // { recurseForDerivations = true; };
     in
     let
       treefmtEval = eachSystem (system: inputs.treefmt-nix.lib.evalModule inputs.nixpkgs.legacyPackages.${system} ./treefmt.nix);
@@ -64,60 +64,92 @@
         formatting = treefmtEval.${pkgs.system}.config.build.check inputs.self;
       });
 
-      packages = eachSystemPkgs { } (pkgs: {
-        sophgo-bootloader-riscv = pkgs.fetchFromGitHub {
-          owner = "milkv-community";
-          repo = "sophgo-bootloader-riscv";
-          rev = "01dc52c";
-          hash = "sha256-qho2HKgVXVN+s/QZQ15uPFgCpCwS91P4+T4cPZ/eLDc=";
-          fetchSubmodules = true;
-        };
-        sophgo-edk2 = pkgs.fetchFromGitHub {
-          owner = "milkv-community";
-          repo = "sophgo-edk2";
-          rev = "cc3706b";
-          hash = "sha256-2LH41Mpk7E4Wkiel1ZqMwPiq5vcaB97NqzEJNkVe62k=";
-          fetchSubmodules = true;
-        };
-        sophgo-opensbi = pkgs.fetchFromGitHub {
-          owner = "milkv-community";
-          repo = "sophgo-opensbi";
-          rev = "3745939";
-          hash = "sha256-UXsAKXO0fBjHkkanZlB0led9CiVeqa01dTM4r7D9dzs=";
-          fetchSubmodules = true;
-        };
-        sophgo-zsbl = pkgs.fetchFromGitHub {
-          owner = "milkv-community";
-          repo = "sophgo-zsbl";
-          rev = "cc80627";
-          hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
-          fetchSubmodules = true;
-        };
+      scopedPackages = eachSystemPkgs { } (pkgs: {
+        milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { });
       });
 
-      devShells = eachSystemPkgs { } (pkgs:
-        let
-          sophgo-bootloader-riscv = packages.${pkgs.system}.sophgo-bootloader-riscv;
-          sophgo-edk2 = packages.${pkgs.system}.sophgo-edk2;
-          sophgo-opensbi = packages.${pkgs.system}.sophgo-opensbi;
-          sophgo-zsbl = packages.${pkgs.system}.sophgo-zsbl;
-          bootloader-repos = [
-            sophgo-bootloader-riscv
-            sophgo-edk2
-            sophgo-opensbi
-            sophgo-zsbl
-          ];
-        in
-        {
-          default = pkgs.mkShell {
-            REPO_SOPHGO_BOOTLOADER_RISCV = sophgo-bootloader-riscv;
-            REPO_SOPHGO_EDK2 = sophgo-edk2;
-            REPO_SOPHGO_OPENSBI = sophgo-opensbi;
-            REPO_SOPHGO_ZSBL = sophgo-zsbl;
-            buildInputs = bootloader-repos ++ [
-              pkgs.go
-            ];
-          };
-        });
+      packages = eachSystemPkgs { } (pkgs: {
+        # default = derivation {
+        #   name = "empty";
+        #   builder = "${pkgs.coreutils}/bin/true";
+        #   system = builtins.currentSystem;
+        # };
+        default = scopedPackages.${pkgs.system}.milkv.pioneer;
+      });
+
+      # scopedPackages = eachSystemPkgs { }
+      #   (pkgs:
+      #     let
+      #       lib = pkgs.lib;
+      #       milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { });
+      #     in
+      #     {
+      #       # sophgo-bootloader-riscv = pkgs.fetchFromGitHub {
+      #       #   owner = "milkv-community";
+      #       #   repo = "sophgo-bootloader-riscv";
+      #       #   rev = "01dc52c";
+      #       #   hash = "sha256-qho2HKgVXVN+s/QZQ15uPFgCpCwS91P4+T4cPZ/eLDc=";
+      #       #   fetchSubmodules = true;
+      #       # };
+
+      #       # src-edk2 = pkgs.fetchFromGitHub {
+      #       #   owner = "milkv-community";
+      #       #   repo = "sophgo-edk2";
+      #       #   rev = "cc3706b";
+      #       #   hash = "sha256-2LH41Mpk7E4Wkiel1ZqMwPiq5vcaB97NqzEJNkVe62k=";
+      #       #   fetchSubmodules = true;
+      #       # };
+
+      #       # src-opensbi = pkgs.fetchFromGitHub {
+      #       #   owner = "milkv-community";
+      #       #   repo = "sophgo-opensbi";
+      #       #   rev = "3745939";
+      #       #   hash = "sha256-UXsAKXO0fBjHkkanZlB0led9CiVeqa01dTM4r7D9dzs=";
+      #       #   fetchSubmodules = true;
+      #       # };
+
+      #       # src-zsbl = pkgs.fetchFromGitHub {
+      #       #   owner = "milkv-community";
+      #       #   repo = "sophgo-zsbl";
+      #       #   rev = "cc80627";
+      #       #   hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
+      #       #   fetchSubmodules = true;
+      #       # };
+
+      #       # bsp-edk2 = pkgs.callPackage ./packages/bsp/edk2.nix { };
+
+      #       # bsp-opensbi = pkgs.callPackage ./packages/bsp/edk2.nix { };
+
+      #       # bsp-zsbl = pkgs.callPackage ./packages/bsp/edk2.nix { };
+
+      #       # toolchain-riscv-xuantie = pkgs.callPackage ./packages/toolchain/riscv-xuantie.nix { };
+
+      #       # toolchain-riscv-gnu = pkgs.callPackage ./packages/toolchain/riscv-gnu.nix { };
+      #     });
+
+      # devShells = eachSystemPkgs { } (pkgs:
+      #   let
+      #     sophgo-bootloader-riscv = packages.${pkgs.system}.sophgo-bootloader-riscv;
+      #     sophgo-edk2 = packages.${pkgs.system}.sophgo-edk2;
+      #     sophgo-opensbi = packages.${pkgs.system}.sophgo-opensbi;
+      #     sophgo-zsbl = packages.${pkgs.system}.sophgo-zsbl;
+      #     bootloader-repos = [
+      #       sophgo-bootloader-riscv
+      #       sophgo-edk2
+      #       sophgo-opensbi
+      #       sophgo-zsbl
+      #     ];
+      #   in
+      #   {
+      #     default = pkgs.mkShell {
+      #       REPO_SOPHGO_BOOTLOADER_RISCV = sophgo-bootloader-riscv;
+      #       REPO_SOPHGO_EDK2 = sophgo-edk2;
+      #       REPO_SOPHGO_OPENSBI = sophgo-opensbi;
+      #       REPO_SOPHGO_ZSBL = sophgo-zsbl;
+      #       buildInputs = bootloader-repos ++ [
+      #         pkgs.go
+      #       ];
+      #     };
+      #   });
     };
 }
