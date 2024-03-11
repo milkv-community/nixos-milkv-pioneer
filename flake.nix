@@ -101,6 +101,12 @@
           sophgo-edk2 = packages.${pkgs.system}.sophgo-edk2;
           sophgo-opensbi = packages.${pkgs.system}.sophgo-opensbi;
           sophgo-zsbl = packages.${pkgs.system}.sophgo-zsbl;
+          bootloader-repos = [
+            sophgo-bootloader-riscv
+            sophgo-edk2
+            sophgo-opensbi
+            sophgo-zsbl
+          ];
         in
         {
           default = pkgs.mkShell {
@@ -108,11 +114,7 @@
             REPO_SOPHGO_EDK2 = sophgo-edk2;
             REPO_SOPHGO_OPENSBI = sophgo-opensbi;
             REPO_SOPHGO_ZSBL = sophgo-zsbl;
-            buildInputs = [
-              sophgo-bootloader-riscv
-              sophgo-edk2
-              sophgo-opensbi
-              sophgo-zsbl
+            buildInputs = bootloader-repos ++ [
               pkgs.go
             ];
           };
