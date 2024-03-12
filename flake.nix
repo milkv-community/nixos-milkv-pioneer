@@ -71,7 +71,9 @@
         milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
         milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
         milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        # TODO: move into separate flake
         toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu;
+        # TODO: move into separate flake
         toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie;
       });
 
@@ -87,6 +89,12 @@
             bsp-src-opensbi
             bsp-src-zsbl
           ];
+          toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu.src;
+          toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie.src;
+          toolchains = [
+            toolchain-riscv-gnu
+            toolchain-riscv-xuantie
+          ];
         in
         {
           default = pkgs.mkShell {
@@ -94,7 +102,9 @@
             BSP_SRC_LINUX = bsp-src-linux;
             BSP_SRC_OPENSBI = bsp-src-opensbi;
             BSP_SRC_ZSBL = bsp-src-zsbl;
-            buildInputs = bsp-srcs ++ [
+            TOOLCHAIN_RISCV_GNU = toolchain-riscv-gnu;
+            TOOLCHAIN_RISCV_XUANTIE = toolchain-riscv-xuantie;
+            buildInputs = bsp-srcs ++ toolchains ++ [
               pkgs.go
             ];
           };

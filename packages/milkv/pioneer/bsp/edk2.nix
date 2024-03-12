@@ -9,7 +9,7 @@ let
     fetchSubmodules = true;
   };
 in
-pkgs.stdenv.mkDerivation rec {
+pkgs.stdenv.mkDerivation {
   inherit (pkgs) system;
   name = "milkv-pioneer-bsp-edk2";
   builder = "${pkgs.coreutils}/bin/true";
