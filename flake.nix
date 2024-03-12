@@ -68,6 +68,7 @@
 
       packages = eachSystemPkgs { } (pkgs: {
         milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+        milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
         milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
         milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
         toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu;
@@ -77,10 +78,12 @@
       devShells = eachSystemPkgs { } (pkgs:
         let
           bsp-src-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2.src;
+          bsp-src-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux.src;
           bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
           bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
           bsp-srcs = [
             bsp-src-edk2
+            bsp-src-linux
             bsp-src-opensbi
             bsp-src-zsbl
           ];
@@ -88,6 +91,7 @@
         {
           default = pkgs.mkShell {
             BSP_SRC_EDK2 = bsp-src-edk2;
+            BSP_SRC_LINUX = bsp-src-linux;
             BSP_SRC_OPENSBI = bsp-src-opensbi;
             BSP_SRC_ZSBL = bsp-src-zsbl;
             buildInputs = bsp-srcs ++ [
