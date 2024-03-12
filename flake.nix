@@ -53,8 +53,6 @@
         in
         f pkgs);
       recurseIntoAttrs = attrs: attrs // { recurseForDerivations = true; };
-    in
-    let
       treefmtEval = eachSystem (system: inputs.treefmt-nix.lib.evalModule inputs.nixpkgs.legacyPackages.${system} ./treefmt.nix);
     in
     rec {
@@ -70,86 +68,33 @@
       });
 
       packages = eachSystemPkgs { } (pkgs: {
-        milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
-        milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
-        milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        # milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+        # milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
+        # milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
         toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu;
         toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie;
       });
 
-      # scopedPackages = eachSystemPkgs { }
-      #   (pkgs:
-      #     let
-      #       lib = pkgs.lib;
-      #       milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { });
-      #     in
-      #     {
-      #       # sophgo-bootloader-riscv = pkgs.fetchFromGitHub {
-      #       #   owner = "milkv-community";
-      #       #   repo = "sophgo-bootloader-riscv";
-      #       #   rev = "01dc52c";
-      #       #   hash = "sha256-qho2HKgVXVN+s/QZQ15uPFgCpCwS91P4+T4cPZ/eLDc=";
-      #       #   fetchSubmodules = true;
-      #       # };
-
-      #       # src-edk2 = pkgs.fetchFromGitHub {
-      #       #   owner = "milkv-community";
-      #       #   repo = "sophgo-edk2";
-      #       #   rev = "cc3706b";
-      #       #   hash = "sha256-2LH41Mpk7E4Wkiel1ZqMwPiq5vcaB97NqzEJNkVe62k=";
-      #       #   fetchSubmodules = true;
-      #       # };
-
-      #       # src-opensbi = pkgs.fetchFromGitHub {
-      #       #   owner = "milkv-community";
-      #       #   repo = "sophgo-opensbi";
-      #       #   rev = "3745939";
-      #       #   hash = "sha256-UXsAKXO0fBjHkkanZlB0led9CiVeqa01dTM4r7D9dzs=";
-      #       #   fetchSubmodules = true;
-      #       # };
-
-      #       # src-zsbl = pkgs.fetchFromGitHub {
-      #       #   owner = "milkv-community";
-      #       #   repo = "sophgo-zsbl";
-      #       #   rev = "cc80627";
-      #       #   hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
-      #       #   fetchSubmodules = true;
-      #       # };
-
-      #       # bsp-edk2 = pkgs.callPackage ./packages/bsp/edk2.nix { };
-
-      #       # bsp-opensbi = pkgs.callPackage ./packages/bsp/edk2.nix { };
-
-      #       # bsp-zsbl = pkgs.callPackage ./packages/bsp/edk2.nix { };
-
-      #       # toolchain-riscv-xuantie = pkgs.callPackage ./packages/toolchain/riscv-xuantie.nix { };
-
-      #       # toolchain-riscv-gnu = pkgs.callPackage ./packages/toolchain/riscv-gnu.nix { };
-      #     });
-
-      # devShells = eachSystemPkgs { } (pkgs:
-      #   let
-      #     sophgo-bootloader-riscv = packages.${pkgs.system}.sophgo-bootloader-riscv;
-      #     sophgo-edk2 = packages.${pkgs.system}.sophgo-edk2;
-      #     sophgo-opensbi = packages.${pkgs.system}.sophgo-opensbi;
-      #     sophgo-zsbl = packages.${pkgs.system}.sophgo-zsbl;
-      #     bootloader-repos = [
-      #       sophgo-bootloader-riscv
-      #       sophgo-edk2
-      #       sophgo-opensbi
-      #       sophgo-zsbl
-      #     ];
-      #   in
-      #   {
-      #     default = pkgs.mkShell {
-      #       REPO_SOPHGO_BOOTLOADER_RISCV = sophgo-bootloader-riscv;
-      #       REPO_SOPHGO_EDK2 = sophgo-edk2;
-      #       REPO_SOPHGO_OPENSBI = sophgo-opensbi;
-      #       REPO_SOPHGO_ZSBL = sophgo-zsbl;
-      #       buildInputs = bootloader-repos ++ [
-      #         pkgs.go
-      #       ];
-      #     };
-      #   });
+      devShells = eachSystemPkgs { } (pkgs:
+        let
+          # bsp-src-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2.src;
+          # bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
+          # bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
+          bsp-srcs = [
+            # bsp-src-edk2
+            # bsp-src-opensbi
+            # bsp-src-zsbl
+          ];
+        in
+        {
+          default = pkgs.mkShell {
+            # BSP_SRC_EDK2 = bsp-src-edk2;
+            # BSP_SRC_OPENSBI = bsp-src-opensbi;
+            # BSP_SRC_ZSBL = bsp-src-zsbl;
+            buildInputs = bsp-srcs ++ [
+              pkgs.go
+            ];
+          };
+        });
     };
 }
