@@ -17,7 +17,6 @@
     ];
     extra-trusted-public-keys = [
       "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
@@ -68,29 +67,29 @@
       });
 
       packages = eachSystemPkgs { } (pkgs: {
-        # milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
-        # milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
-        # milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+        milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
+        milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
         toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu;
         toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie;
       });
 
       devShells = eachSystemPkgs { } (pkgs:
         let
-          # bsp-src-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2.src;
-          # bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
-          # bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
+          bsp-src-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2.src;
+          bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
+          bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
           bsp-srcs = [
-            # bsp-src-edk2
-            # bsp-src-opensbi
-            # bsp-src-zsbl
+            bsp-src-edk2
+            bsp-src-opensbi
+            bsp-src-zsbl
           ];
         in
         {
           default = pkgs.mkShell {
-            # BSP_SRC_EDK2 = bsp-src-edk2;
-            # BSP_SRC_OPENSBI = bsp-src-opensbi;
-            # BSP_SRC_ZSBL = bsp-src-zsbl;
+            BSP_SRC_EDK2 = bsp-src-edk2;
+            BSP_SRC_OPENSBI = bsp-src-opensbi;
+            BSP_SRC_ZSBL = bsp-src-zsbl;
             buildInputs = bsp-srcs ++ [
               pkgs.go
             ];

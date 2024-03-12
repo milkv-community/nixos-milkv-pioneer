@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  repo = pkgs.fetchFromGitHub {
+  src = pkgs.fetchFromGitHub {
     owner = "milkv-community";
     repo = "sophgo-edk2";
     rev = "cc3706b";
@@ -14,6 +14,6 @@ pkgs.stdenv.mkDerivation rec {
   name = "milkv-pioneer-bsp-edk2";
   builder = "${pkgs.coreutils}/bin/true";
   passthru = {
-    src = "${repo}";
+    src = "${src}";
   };
 }
