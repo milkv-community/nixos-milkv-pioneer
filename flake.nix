@@ -83,18 +83,8 @@
           bsp-src-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux.src;
           bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
           bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
-          bsp-srcs = [
-            bsp-src-edk2
-            bsp-src-linux
-            bsp-src-opensbi
-            bsp-src-zsbl
-          ];
           toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu.src;
           toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie.src;
-          toolchains = [
-            toolchain-riscv-gnu
-            toolchain-riscv-xuantie
-          ];
         in
         {
           default = pkgs.mkShell {
@@ -104,7 +94,7 @@
             BSP_SRC_ZSBL = bsp-src-zsbl;
             TOOLCHAIN_RISCV_GNU = toolchain-riscv-gnu;
             TOOLCHAIN_RISCV_XUANTIE = toolchain-riscv-xuantie;
-            buildInputs = bsp-srcs ++ toolchains ++ [
+            buildInputs = [
               pkgs.go
             ];
           };
