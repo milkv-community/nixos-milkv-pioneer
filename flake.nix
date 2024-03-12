@@ -79,12 +79,12 @@
 
       devShells = eachSystemPkgs { } (pkgs:
         let
-          bsp-src-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2.src;
-          bsp-src-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux.src;
-          bsp-src-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi.src;
-          bsp-src-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl.src;
-          toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu.src;
-          toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie.src;
+          bsp-src-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2.src;
+          bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
+          bsp-src-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi.src;
+          bsp-src-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl.src;
+          toolchain-riscv-gnu = packages.${pkgs.system}.toolchain-riscv-gnu.src;
+          toolchain-riscv-xuantie = packages.${pkgs.system}.toolchain-riscv-xuantie.src;
         in
         {
           default = pkgs.mkShell {
