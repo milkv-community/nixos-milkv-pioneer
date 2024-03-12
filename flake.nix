@@ -66,15 +66,15 @@
 
       scopedPackages = eachSystemPkgs { } (pkgs: {
         milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { });
+        toolchain = recurseIntoAttrs (pkgs.callPackage ./packages/toolchain { });
       });
 
       packages = eachSystemPkgs { } (pkgs: {
-        # default = derivation {
-        #   name = "empty";
-        #   builder = "${pkgs.coreutils}/bin/true";
-        #   system = builtins.currentSystem;
-        # };
-        default = scopedPackages.${pkgs.system}.milkv.pioneer;
+        milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+        milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
+        milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        toolchain-riscv-gnu = scopedPackages.${pkgs.system}.toolchain.riscv-gnu;
+        toolchain-riscv-xuantie = scopedPackages.${pkgs.system}.toolchain.riscv-xuantie;
       });
 
       # scopedPackages = eachSystemPkgs { }

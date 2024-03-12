@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
-pkgs.stdenv.mkDerivation {
-  pname = "milkv-pioneer-bsp-edk2";
-  version = "0.0.0";
+derivation {
+  name = "milkv-pioneer-bsp-edk2";
+  builder = "${pkgs.coreutils}/bin/true";
+  system = builtins.currentSystem;
 }

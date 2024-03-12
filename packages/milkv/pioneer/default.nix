@@ -1,11 +1,5 @@
-{ pkgs, lib }:
+{ pkgs, lib, recurseIntoAttrs, ... }:
 
-derivation {
-  name = "pioneer";
-  builder = "${pkgs.coreutils}/bin/true";
-  system = builtins.currentSystem;
-}
-
-# lib.makeScope pkgs.newScope (self: with self; {
-#   # bsp = callPackage ./bsp { };
-# })
+lib.makeScope pkgs.newScope (self: with self; {
+  bsp = recurseIntoAttrs (pkgs.callPackage ./bsp { });
+})
