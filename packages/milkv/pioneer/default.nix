@@ -1,5 +1,5 @@
 { pkgs, lib, recurseIntoAttrs, ... }:
 
-lib.makeScope pkgs.newScope (self: with self; {
-  bsp = recurseIntoAttrs (pkgs.callPackage ./bsp { });
+lib.makeScope pkgs.newScope (self: {
+  bsp = recurseIntoAttrs (self.callPackage ./bsp { });
 })
