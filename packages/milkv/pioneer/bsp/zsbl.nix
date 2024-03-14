@@ -1,5 +1,12 @@
 { pkgs, ... }:
 
+# This derivation is adapted from the Sophgo SG2042 bootloader script functions for building the
+# zsbl artifact. For simplicitly, modularity, and easier maintenance, we re-implement the parts of
+# the build script we need rather than invoke the upstream bootloader script directly.
+#
+# For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh` at
+# https://github.com/sophgo/bootloader-riscv
+
 pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
   version = "0.0.0";
@@ -21,7 +28,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  CROSS_COMPILE = "${pkgs.pkgsCross.riscv64.stdenv.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${pkgs.pkgsCross.riscv64.stdenv.cc.targetPrefix}";
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "minimum";
@@ -41,7 +48,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
 
   buildPhase = ''
     pushd $RV_ZSBL_SRC_DIR
-      make CROSS_COMPILE=$CROSS_COMPILE O=$RV_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
+      make CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$RV_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
       err=$?
     popd
 
@@ -51,7 +58,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     fi
 
     pushd $RV_ZSBL_BUILD_DIR
-      make -j$(nproc) CROSS_COMPILE=$CROSS_COMPILE ARCH=riscv
+      make -j$(nproc) CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE ARCH=riscv
       err=$?
     popd
 
