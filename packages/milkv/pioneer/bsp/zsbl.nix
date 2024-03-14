@@ -4,6 +4,9 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
   version = "0.0.0";
 
+  # NOTE: linker fails with `undefined reference to `__stack_chk_fail'` without disabling hardening.
+  hardeningDisable = [ "all" ];
+
   nativeBuildInputs = with pkgs; [
     bison
     flex
@@ -37,8 +40,6 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   '';
 
   buildPhase = ''
-    LD=$CC
-
     pushd $RV_ZSBL_SRC_DIR
       make CROSS_COMPILE=$CROSS_COMPILE O=$RV_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
       err=$?
