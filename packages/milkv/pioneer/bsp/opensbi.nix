@@ -52,8 +52,4 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     cp $BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
     cp $BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
   '';
-
-  passthru = {
-    inherit src;
-  };
 }
