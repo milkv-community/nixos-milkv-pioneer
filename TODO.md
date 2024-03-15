@@ -5,4 +5,5 @@
 - Provide package for GCC 14 with T-Head patches
 - Build Pioneer image with kernel and packages customized gcc.{arch,tune} for C920
 - Upstream sophgo/opensbi recent patches
+- PRs for sophgo repos to rebase on upstream repos
 - Github actions alerting when upstream is updated with new commits

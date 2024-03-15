@@ -2,7 +2,7 @@
 
 # This derivation builds the zsbl artifact from the Sophgo SG2042 bsp.
 #
-# For reference, see the upstream zsbl repository:
+# For reference, see the upstream zsbl repositories:
 #   https://github.com/sophgo/zsbl
 #
 # For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh`:
