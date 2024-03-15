@@ -55,17 +55,15 @@
 
       devShells = eachSystemPkgs { } (pkgs:
         let
-          # bsp-src-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2.src;
+          bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
           # bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
-          # bsp-src-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi.src;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
-            # BSP_SRC_EDK2 = bsp-src-edk2;
+            BSP_EDK2 = bsp-edk2;
             # BSP_SRC_LINUX = bsp-src-linux;
-            # BSP_SRC_OPENSBI = bsp-src-opensbi;
             BSP_OPENSBI = bsp-opensbi;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
