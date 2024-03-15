@@ -1,11 +1,12 @@
 { pkgs, ... }:
 
-# This derivation is adapted from the Sophgo SG2042 bootloader script functions for building the
-# zsbl artifact. For simplicitly, modularity, and easier maintenance, we re-implement the parts of
-# the build script we need rather than invoke the upstream bootloader script directly.
+# This derivation builds the zsbl artifact from the Sophgo SG2042 bsp.
 #
-# For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh` at
-# https://github.com/sophgo/bootloader-riscv
+# For reference, see the upstream zsbl repository:
+#   https://github.com/sophgo/zsbl
+#
+# For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh`:
+#   https://github.com/sophgo/bootloader-riscv
 
 pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
