@@ -43,7 +43,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   # - disable DEBUG_INFO
   buildPhase = ''
     pushd $BSP_SBI_SRC_DIR
-      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE PLATFORM=$PLATFORM FW_PIC=y BUILD_INFO=y DEBUG=1 V=1
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE PLATFORM=$PLATFORM FW_PIC=y BUILD_INFO=y DEBUG=1
     popd
   '';
 
