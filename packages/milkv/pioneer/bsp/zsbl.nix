@@ -23,7 +23,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
 
   src = pkgs.fetchFromGitHub {
     owner = "milkv-community";
-    repo = "sophgo-zsbl";
+    repo = "sg2042-zsbl";
     rev = "cc80627";
     hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
     fetchSubmodules = true;
@@ -33,23 +33,17 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "minimum";
-  RV_ZSBL_SRC_DIR = "/build/zsbl";
-  RV_ZSBL_BUILD_DIR = "${RV_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
-
-  phases = [
-    "unpackPhase"
-    "buildPhase"
-    "installPhase"
-  ];
+  BSP_ZSBL_SRC_DIR = "/build/zsbl";
+  BSP_ZSBL_BUILD_DIR = "${BSP_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
   unpackPhase = ''
-    cp -a $src $RV_ZSBL_SRC_DIR
-    chmod -R u+w $RV_ZSBL_SRC_DIR
+    cp -a $src $BSP_ZSBL_SRC_DIR
+    chmod -R u+w $BSP_ZSBL_SRC_DIR
   '';
 
   buildPhase = ''
-    pushd $RV_ZSBL_SRC_DIR
-      make CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$RV_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
+    pushd $BSP_ZSBL_SRC_DIR
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$BSP_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
       err=$?
     popd
 
@@ -58,8 +52,8 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
       return $err
     fi
 
-    pushd $RV_ZSBL_BUILD_DIR
-      make -j$(nproc) CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE ARCH=riscv
+    pushd $BSP_ZSBL_BUILD_DIR
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE ARCH=riscv
       err=$?
     popd
 
@@ -71,10 +65,6 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp -a $RV_ZSBL_BUILD_DIR/zsbl.bin $out
+    cp -a $BSP_ZSBL_BUILD_DIR/zsbl.bin $out
   '';
-
-  passthru = {
-    inherit src;
-  };
 }

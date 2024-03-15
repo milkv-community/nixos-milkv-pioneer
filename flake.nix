@@ -1,39 +1,19 @@
 {
   description = "A Nix flake for building the Milk-V Pioneer BSP";
 
-  nixConfig = {
-    accept-flake-config = true;
-    # FIXME:
-    extra-access-tokens = [
-      "!include /home/silvanshade/.config/nix-access-tokens/github"
-    ];
-    extra-experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    extra-substituters = [
-      "https://cache.nixos.org"
-      "https://nix-community.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    ];
-  };
-
   inputs = {
     flake-compat = {
       url = "github:inclyc/flake-compat";
       flake = false;
     };
-    nixos-hardware = {
-      url = "github:nixos/nixos-hardware";
-      # inputs.nixpkgs.follows = "nixpkgs"; # NOTE: non-existent
-    };
-    nixos-riscv = {
-      url = "github:NickCao/nixos-riscv";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nixos-hardware = {
+    #   url = "github:nixos/nixos-hardware";
+    #   # inputs.nixpkgs.follows = "nixpkgs"; # NOTE: non-existent
+    # };
+    # nixos-riscv = {
+    #   url = "github:NickCao/nixos-riscv";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
@@ -78,7 +58,7 @@
           # bsp-src-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2.src;
           # bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
           # bsp-src-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi.src;
-          # bsp-src-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl.src;
+          bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
@@ -86,7 +66,7 @@
             # BSP_SRC_EDK2 = bsp-src-edk2;
             # BSP_SRC_LINUX = bsp-src-linux;
             # BSP_SRC_OPENSBI = bsp-src-opensbi;
-            # BSP_SRC_ZSBL = bsp-src-zsbl;
+            BSP_OPENSBI = bsp-opensbi;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
               bison
