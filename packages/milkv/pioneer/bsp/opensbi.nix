@@ -23,33 +23,34 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     rev = "e270237";
     hash = "sha256-28dY49OM79vxRM5xDgomxbJzuV6/LIY35QsfWYmGCAU=";
     fetchSubmodules = true;
+    name = "sg2042-opensbi";
   };
 
   RISCV64_LINUX_CROSS_COMPILE = "${pkgs.pkgsCross.riscv64.stdenv.cc.targetPrefix}";
   PLATFORM = "generic";
-  BSP_SBI_SRC_DIR = "/build/opensbi";
+  SG2042_BSP_SBI_SRC_DIR = "/build/${src.repo}";
 
   unpackPhase = ''
-    cp -a $src $BSP_SBI_SRC_DIR
-    chmod -R u+w $BSP_SBI_SRC_DIR
+    cp -a $src $SG2042_BSP_SBI_SRC_DIR
+    chmod -R u+w $SG2042_BSP_SBI_SRC_DIR
   '';
 
   patchPhase = ''
-    patchShebangs $BSP_SBI_SRC_DIR/scripts
+    patchShebangs $SG2042_BSP_SBI_SRC_DIR/scripts
   '';
 
   # TODO:
   # - disable BUILD_INFO
   # - disable DEBUG_INFO
   buildPhase = ''
-    pushd $BSP_SBI_SRC_DIR
+    pushd $SG2042_BSP_SBI_SRC_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE PLATFORM=$PLATFORM FW_PIC=y BUILD_INFO=y DEBUG=1
     popd
   '';
 
   installPhase = ''
     mkdir -p $out
-    cp $BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
-    cp $BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
+    cp $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
+    cp $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
   '';
 }

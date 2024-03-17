@@ -33,17 +33,17 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "minimum";
-  BSP_ZSBL_SRC_DIR = "/build/zsbl";
-  BSP_ZSBL_BUILD_DIR = "${BSP_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
+  SG2042_BSP_ZSBL_SRC_DIR = "/build/${src.repo}";
+  SG2042_BSP_ZSBL_BUILD_DIR = "${SG2042_BSP_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
   unpackPhase = ''
-    cp -a $src $BSP_ZSBL_SRC_DIR
-    chmod -R u+w $BSP_ZSBL_SRC_DIR
+    cp -a $src $SG2042_BSP_ZSBL_SRC_DIR
+    chmod -R u+w $SG2042_BSP_ZSBL_SRC_DIR
   '';
 
   buildPhase = ''
-    pushd $BSP_ZSBL_SRC_DIR
-      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$BSP_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
+    pushd $SG2042_BSP_ZSBL_SRC_DIR
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$SG2042_BSP_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
       err=$?
     popd
 
@@ -52,7 +52,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
       return $err
     fi
 
-    pushd $BSP_ZSBL_BUILD_DIR
+    pushd $SG2042_BSP_ZSBL_BUILD_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE ARCH=riscv
       err=$?
     popd
@@ -65,6 +65,6 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp -a $BSP_ZSBL_BUILD_DIR/zsbl.bin $out
+    cp -a $SG2042_BSP_ZSBL_BUILD_DIR/zsbl.bin $out
   '';
 }
