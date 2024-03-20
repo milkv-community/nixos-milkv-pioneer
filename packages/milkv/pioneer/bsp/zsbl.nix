@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ flake, pkgs, ... }:
 
 # This derivation builds the zsbl artifact from the Sophgo SG2042 bsp.
 #
@@ -7,8 +7,12 @@
 #
 # For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh`:
 #   https://github.com/sophgo/bootloader-riscv
-
-pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
+let
+  ccacheStdenv = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
+    extraConfig = flake.ccache.extraConfig;
+  };
+in
+ccacheStdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
   version = "0.0.0";
 
@@ -17,6 +21,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
 
   nativeBuildInputs = with pkgs; [
     bison
+    breakpointHook
     flex
     gcc
   ];
@@ -29,7 +34,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${pkgs.pkgsCross.riscv64.stdenv.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${ccacheStdenv.cc.targetPrefix}";
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "minimum";
