@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ flake, pkgs, ... }:
 
 # This derivation builds the opensbi artifact from the Sophgo SG2042 bsp.
 #
@@ -9,7 +9,12 @@
 # For reference, see the `build_rv_sbi` function in `scripts/envsetup.sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
+let
+  riscv64-ccacheStdenv = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
+    extraConfig = flake.ccache.extraConfig;
+  };
+in
+riscv64-ccacheStdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-opensbi";
   version = "0.0.0";
 
@@ -26,7 +31,7 @@ pkgs.pkgsCross.riscv64.stdenv.mkDerivation rec {
     name = "sg2042-opensbi";
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${pkgs.pkgsCross.riscv64.stdenv.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${riscv64-ccacheStdenv.cc.targetPrefix}";
   PLATFORM = "generic";
   SG2042_BSP_SBI_SRC_DIR = "/build/${src.repo}";
 

@@ -84,23 +84,12 @@
           # bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
-          # ccacheStdenv = pkgs.ccacheStdenv.override {
-          #   extraConfig = ccacheExtraConfig;
-          # };
-          # hello = ccacheStdenv.mkDerivation {
-          #   name = "ccache-hello";
-          #   src = pkgs.hello.src;
-
-          #   nativeBuildInputs = [
-          #     pkgs.breakpointHook
-          #   ];
-          # };
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
-            # BSP_EDK2 = bsp-edk2;
+            BSP_EDK2 = bsp-edk2;
             # BSP_SRC_LINUX = bsp-src-linux;
-            # BSP_OPENSBI = bsp-opensbi;
+            BSP_OPENSBI = bsp-opensbi;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
               bison

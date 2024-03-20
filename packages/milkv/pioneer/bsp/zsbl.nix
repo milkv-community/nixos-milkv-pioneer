@@ -7,12 +7,13 @@
 #
 # For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh`:
 #   https://github.com/sophgo/bootloader-riscv
+
 let
-  ccacheStdenv = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
+  riscv64-ccacheStdenv = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
     extraConfig = flake.ccache.extraConfig;
   };
 in
-ccacheStdenv.mkDerivation rec {
+riscv64-ccacheStdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
   version = "0.0.0";
 
@@ -34,7 +35,7 @@ ccacheStdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${ccacheStdenv.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${riscv64-ccacheStdenv.cc.targetPrefix}";
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "minimum";

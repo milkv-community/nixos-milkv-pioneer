@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ flake, pkgs, ... }:
 
 # This derivation builds the edk2 artifact from the Sophgo SG2042 bsp.
 #
@@ -18,7 +18,16 @@
 # we also need the riscv64-embedded targetting `gcc` installed as a nativeBuildInput. The edk2 build
 # system will invoke this riscv64-embedded cross-toolchain on its own; we only need to set the
 # `GCC5_RISCV64_PREFIX`.
-pkgs.stdenv.mkDerivation rec {
+
+let
+  ccacheStdenv = pkgs.ccacheStdenv.override {
+    extraConfig = flake.ccache.extraConfig;
+  };
+  riscv64-embedded-ccacheStdenv = pkgs.pkgsCross.riscv64-embedded.ccacheStdenv.override {
+    extraConfig = flake.ccache.extraConfig;
+  };
+in
+ccacheStdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-edk2";
   version = "0.0.0";
 
@@ -91,7 +100,7 @@ pkgs.stdenv.mkDerivation rec {
     export WORKSPACE=$SG2042_BSP_EDKII_SRC_DIR
     export PACKAGES_PATH=$WORKSPACE/edk2:$WORKSPACE/edk2-platforms:$WORKSPACE/edk2-non-osi
     export EDK_TOOLS_PATH=$WORKSPACE/edk2/BaseTools
-    export GCC5_RISCV64_PREFIX=${pkgs.pkgsCross.riscv64-embedded.stdenv.cc.targetPrefix}
+    export GCC5_RISCV64_PREFIX=${riscv64-embedded-ccacheStdenv.cc.targetPrefix}
 
     # NOTE: We must first clear the positional args inherited from Nix environment so that
     # "buildPhase" is not passed as a positional argument when sourcing `edk2/edksetup.sh` below,
