@@ -40,7 +40,7 @@
       scopedPackages = eachSystemPkgs { } (pkgs:
         let
           flake = {
-            ccache = {
+            ccache = rec {
               extraConfig = ''
                 export CCACHE_MAXSIZE=20G
                 export CCACHE_COMPILERCHECK=content
@@ -66,13 +66,13 @@
                 fi
               '';
               stdenv = pkgs.ccacheStdenv.override {
-                extraConfig = flake.ccache.extraConfig;
+                inherit extraConfig;
               };
               stdenv-riscv64 = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
-                extraConfig = flake.ccache.extraConfig;
+                inherit extraConfig;
               };
               stdenv-riscv64-embedded = pkgs.pkgsCross.riscv64-embedded.ccacheStdenv.override {
-                extraConfig = flake.ccache.extraConfig;
+                inherit extraConfig;
               };
             };
           };
@@ -84,7 +84,7 @@
 
       packages = eachSystemPkgs { } (pkgs: {
         milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
-        # milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
+        milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
         milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
         milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
       });
@@ -92,14 +92,14 @@
       devShells = eachSystemPkgs { } (pkgs:
         let
           bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
-          # bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
+          bsp-src-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux.src;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
             BSP_EDK2 = bsp-edk2;
-            # BSP_SRC_LINUX = bsp-src-linux;
+            BSP_SRC_LINUX = bsp-src-linux;
             BSP_OPENSBI = bsp-opensbi;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
