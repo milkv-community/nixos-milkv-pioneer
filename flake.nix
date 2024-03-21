@@ -112,10 +112,7 @@
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
-          default = pkgs.mkShell.override
-            {
-              inherit (flake.${pkgs.system}.ccache) stdenv;
-            }
+          default = pkgs.mkShell.override { }
             {
               BSP_EDK2_BIN = bsp-edk2;
               BSP_EDK2_SRC = bsp-edk2.src-edk2;
@@ -130,16 +127,25 @@
               BSP_UROOT_INITRD_SRC = bsp-uroot-initrd.src;
               BSP_ZSBL_BIN = bsp-zsbl;
               BSP_ZSBL_SRC = bsp-zsbl.src;
-              nativeBuildInputs = [
-                flake.${pkgs.system}.ccache.stdenv-riscv64
-                flake.${pkgs.system}.ccache.stdenv-riscv64-embedded
-              ]
-              ++ bsp-edk2.nativeBuildInputs
-              ++ bsp-bootloader.nativeBuildInputs
-              ++ bsp-linux.nativeBuildInputs
-              ++ bsp-opensbi.nativeBuildInputs
-              ++ bsp-uroot-initrd.nativeBuildInputs
-              ++ bsp-zsbl.nativeBuildInputs;
+              nativeBuildInputs = pkgs.lib.filter
+                (p: ! pkgs.lib.elem p [
+                  # NOTE: The user will not have permissions to write to /var/cache/ccache so remove
+                  # the ccache stdenvs from the shell environment.
+                  flake.${pkgs.system}.ccache.stdenv.cc
+                  flake.${pkgs.system}.ccache.stdenv-riscv64.cc
+                  flake.${pkgs.system}.ccache.stdenv-riscv64-embedded.cc
+                ])
+                ([
+                  pkgs.stdenv.cc
+                  pkgs.pkgsCross.riscv64.stdenv.cc
+                  pkgs.pkgsCross.riscv64-embedded.stdenv.cc
+                ]
+                ++ bsp-edk2.nativeBuildInputs
+                ++ bsp-bootloader.nativeBuildInputs
+                ++ bsp-linux.nativeBuildInputs
+                ++ bsp-opensbi.nativeBuildInputs
+                ++ bsp-uroot-initrd.nativeBuildInputs
+                ++ bsp-zsbl.nativeBuildInputs);
             };
         });
     };
