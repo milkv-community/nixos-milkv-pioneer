@@ -5,7 +5,7 @@
 # For reference, see the upstream zsbl repositories:
 #   https://github.com/sophgo/zsbl
 #
-# For reference, see the `build_rv_zsbl` function in `scripts/envsetup.sh`:
+# For reference, see the `build_rv_zsbl` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
 flake.ccache.stdenv-riscv64.mkDerivation rec {
@@ -16,8 +16,8 @@ flake.ccache.stdenv-riscv64.mkDerivation rec {
   hardeningDisable = [ "all" ];
 
   nativeBuildInputs = with pkgs; [
+    # breakpointHook
     bison
-    breakpointHook
     flex
     gcc
   ];

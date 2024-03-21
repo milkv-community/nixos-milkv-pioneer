@@ -14,6 +14,7 @@ flake.ccache.stdenv-riscv64.mkDerivation rec {
   version = "0.0.0";
 
   nativeBuildInputs = with pkgs; [
+    # breakpointHook
     python3
   ];
 

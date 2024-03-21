@@ -24,11 +24,12 @@ flake.ccache.stdenv.mkDerivation rec {
   version = "0.0.0";
 
   nativeBuildInputs = with pkgs; [
+    breakpointHook
     libuuid
     # NOTE: The riscv64-embedded targetting `gcc`. We use this version (with the `stdenv` path)
     # rather than the `pkgsCross.riscv64-embedded.buildPackages.gcc`, because the latter seemingly
     # does not set the `targetPrefix` attribute, which we use below to set `GCC5_RISCV64_PREFIX`.
-    pkgsCross.riscv64-embedded.stdenv.cc
+    flake.ccache.stdenv-riscv64-embedded.cc
     python3
   ];
 
@@ -100,9 +101,9 @@ flake.ccache.stdenv.mkDerivation rec {
     set -- # clear the positional args
     source edk2/edksetup.sh
 
-    make -C edk2/BaseTools
+    make -j$NIX_BUILD_CORES -C edk2/BaseTools
 
-    build -a RISCV64 -t GCC5 -b $TARGET -D X64EMU_ENABLE -p Platform/Sophgo/SG2042_EVB_Board/SG2042.dsc
+    build -n $NIX_BUILD_CORES --arch=RISCV64 --tagname=GCC5 --buildtarget=$TARGET --define=X64EMU_ENABLE --platform=Platform/Sophgo/SG2042_EVB_Board/SG2042.dsc
   '';
 
   installPhase = ''
