@@ -129,13 +129,14 @@
               BSP_ZSBL_SRC = bsp-zsbl.src;
               nativeBuildInputs = pkgs.lib.filter
                 (p: ! pkgs.lib.elem p [
-                  # NOTE: The user will not have permissions to write to /var/cache/ccache so remove
-                  # the ccache stdenvs from the shell environment.
+                  # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
+                  # so just remove the ccache stdenvs from the shell environment.
                   flake.${pkgs.system}.ccache.stdenv.cc
                   flake.${pkgs.system}.ccache.stdenv-riscv64.cc
                   flake.${pkgs.system}.ccache.stdenv-riscv64-embedded.cc
                 ])
                 ([
+                  # NOTE: Replace the removed ccache stdenvs with non-caching variants.
                   pkgs.stdenv.cc
                   pkgs.pkgsCross.riscv64.stdenv.cc
                   pkgs.pkgsCross.riscv64-embedded.stdenv.cc
