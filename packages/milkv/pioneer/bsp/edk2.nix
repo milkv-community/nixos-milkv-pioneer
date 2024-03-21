@@ -2,7 +2,7 @@
 
 # This derivation builds the edk2 artifact from the Sophgo SG2042 bsp.
 #
-# For reference, see the upstream zsbl repositories:
+# For reference, see the upstream edk2 repositories:
 #   https://github.com/sophgo/sophgo-edk2
 #   https://github.com/sophgo/edk2
 #   https://github.com/sophgo/edk2-platforms

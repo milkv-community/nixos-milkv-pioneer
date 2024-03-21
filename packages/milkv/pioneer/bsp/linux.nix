@@ -2,8 +2,9 @@
 
 # This derivation builds the linux kernel artifact from the Sophgo SG2042 bsp.
 #
-# For reference, see the upstream zsbl repositories:
+# For reference, see the upstream linux repositories:
 #   https://github.com/sophgo/linux-riscv
+#   https://github.com/torvalds/linux
 #
 # For reference, see the `build_rv_kernel` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
