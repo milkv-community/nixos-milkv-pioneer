@@ -5,7 +5,7 @@ flake.ccache.stdenv.mkDerivation rec {
   version = "6.8";
 
   nativeBuildInputs = with pkgs; linuxPackages_6_8.kernel.nativeBuildInputs ++ [
-    breakpointHook
+    # breakpointHook
     flake.ccache.stdenv-riscv64.cc
   ];
 
@@ -20,7 +20,7 @@ flake.ccache.stdenv.mkDerivation rec {
   RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";
   VENDOR = "sophgo";
   CHIP = "mango";
-  KERNEL_VARIANT = "minimum";
+  KERNEL_VARIANT = "normal";
   LOCALVERSION = "milkv-community";
   SG2042_BSP_LINUX_CONFIG = "${VENDOR}_${CHIP}_${KERNEL_VARIANT}_defconfig";
   SG2042_BSP_LINUX_SRC_DIR = "/build/${src.repo}";

@@ -34,7 +34,7 @@ flake.ccache.stdenv.mkDerivation rec {
   RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";
   CHIP = "mango";
   CHIP_NUM = "single";
-  KERNEL_VARIANT = "minimum";
+  KERNEL_VARIANT = "normal";
   SG2042_BSP_ZSBL_SRC_DIR = "/build/${src.repo}";
   SG2042_BSP_ZSBL_BUILD_DIR = "${SG2042_BSP_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
