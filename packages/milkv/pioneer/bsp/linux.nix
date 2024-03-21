@@ -23,7 +23,6 @@ flake.ccache.stdenv.mkDerivation rec {
     repo = "linux";
     rev = "dfe9dcc";
     hash = "sha256-zCrQwjFn09gyal511xLCxVP2+Uvlp1gsVta42PL8+zQ=";
-    fetchSubmodules = true;
   };
 
   RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";

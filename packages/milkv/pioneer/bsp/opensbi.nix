@@ -24,7 +24,6 @@ flake.ccache.stdenv.mkDerivation rec {
     repo = "opensbi";
     rev = "e270237";
     hash = "sha256-28dY49OM79vxRM5xDgomxbJzuV6/LIY35QsfWYmGCAU=";
-    fetchSubmodules = true;
     name = "sg2042-opensbi";
   };
 
