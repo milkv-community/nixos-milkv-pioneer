@@ -31,6 +31,9 @@ pkgs.buildGoApplication {
   # about an empty `GOROOT`.
   allowGoReference = true;
 
+  # NOTE: Several of the tests will fail without rewriting paths. Some others fail due to permission
+  # issues in the sandbox. Overall it doesn't seem worth fixing these in `preBuild` and enabling
+  # checks, especially since we don't use or even build most of the commands.
   doCheck = false;
 
   buildPhase = ''

@@ -20,7 +20,6 @@ flake.ccache.stdenv.mkDerivation rec {
     flake.ccache.stdenv-riscv64.cc
     bison
     flex
-    gcc
   ];
 
   src = pkgs.fetchFromGitHub {

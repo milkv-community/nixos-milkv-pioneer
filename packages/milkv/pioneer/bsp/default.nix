@@ -1,9 +1,10 @@
 { flake, pkgs, lib, ... }:
 
-lib.makeScope pkgs.newScope (self: {
-  edk2 = self.callPackage ./edk2.nix { inherit flake; };
-  linux = self.callPackage ./linux.nix { inherit flake; };
-  opensbi = self.callPackage ./opensbi.nix { inherit flake; };
-  uroot-initrd = self.callPackage ./uroot-initrd.nix { inherit flake; };
-  zsbl = self.callPackage ./zsbl.nix { inherit flake; };
+lib.makeScope pkgs.newScope (bsp: {
+  bootloader = bsp.callPackage ./bootloader.nix { inherit bsp flake; };
+  edk2 = bsp.callPackage ./edk2.nix { inherit bsp flake; };
+  linux = bsp.callPackage ./linux.nix { inherit bsp flake; };
+  opensbi = bsp.callPackage ./opensbi.nix { inherit bsp flake; };
+  uroot-initrd = bsp.callPackage ./uroot-initrd.nix { inherit bsp flake; };
+  zsbl = bsp.callPackage ./zsbl.nix { inherit bsp flake; };
 })

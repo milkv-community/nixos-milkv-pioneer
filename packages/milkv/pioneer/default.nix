@@ -1,5 +1,5 @@
 { flake, pkgs, lib, recurseIntoAttrs, ... }:
 
-lib.makeScope pkgs.newScope (self: {
-  bsp = recurseIntoAttrs (self.callPackage ./bsp { inherit flake; });
+lib.makeScope pkgs.newScope (pioneer: {
+  bsp = recurseIntoAttrs (pioneer.callPackage ./bsp { inherit flake; });
 })

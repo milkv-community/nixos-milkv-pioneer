@@ -95,6 +95,7 @@
       packages = eachSystemPkgs { }
         (pkgs: {
           milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+          milkv-pioneer-bsp-bootloader = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.bootloader;
           milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
           milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
           milkv-pioneer-bsp-uroot-initrd = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.uroot-initrd;
@@ -104,6 +105,7 @@
       devShells = eachSystemPkgs { } (pkgs:
         let
           bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
+          bsp-bootloader = packages.${pkgs.system}.milkv-pioneer-bsp-bootloader;
           bsp-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
           bsp-uroot-initrd = packages.${pkgs.system}.milkv-pioneer-bsp-uroot-initrd;
@@ -119,6 +121,7 @@
               BSP_EDK2_SRC = bsp-edk2.src-edk2;
               BSP_EDK2_PLATFORMS_SRC = bsp-edk2.src-edk2-platforms;
               BSP_EDK2_NON_OSI_SRC = bsp-edk2.src-edk2-non-osi;
+              BSP_BOOTLOADER_BIN = bsp-bootloader;
               BSP_LINUX_BIN = bsp-linux;
               BSP_LINUX_SRC = bsp-linux.src;
               BSP_OPENSBI_BIN = bsp-opensbi;
@@ -132,6 +135,7 @@
                 flake.${pkgs.system}.ccache.stdenv-riscv64-embedded
               ]
               ++ bsp-edk2.nativeBuildInputs
+              ++ bsp-bootloader.nativeBuildInputs
               ++ bsp-linux.nativeBuildInputs
               ++ bsp-opensbi.nativeBuildInputs
               ++ bsp-uroot-initrd.nativeBuildInputs
