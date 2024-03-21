@@ -100,11 +100,18 @@
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
-            BSP_EDK2 = bsp-edk2;
-            BSP_LINUX = bsp-linux;
-            BSP_OPENSBI = bsp-opensbi;
-            BSP_UROOT = bsp-uroot;
-            BSP_ZSBL = bsp-zsbl;
+            BSP_EDK2_BIN = bsp-edk2;
+            BSP_EDK2_SRC = bsp-edk2.src-edk2;
+            BSP_EDK2_PLATFORMS_SRC = bsp-edk2.src-edk2-platforms;
+            BSP_EDK2_NON_OSI_SRC = bsp-edk2.src-edk2-non-osi;
+            BSP_LINUX_BIN = bsp-linux;
+            BSP_LINUX_SRC = bsp-linux.src;
+            BSP_OPENSBI_BIN = bsp-opensbi;
+            BSP_OPENSBI_SRC = bsp-opensbi.src;
+            BSP_UROOT_BIN = bsp-uroot;
+            # BSP_UROOT_SRC = bsp-uroot.src;
+            BSP_ZSBL_BIN = bsp-zsbl;
+            BSP_ZSBL_SRC = bsp-zsbl.src;
             nativeBuildInputs = [
               flake.${pkgs.system}.ccache.stdenv
               flake.${pkgs.system}.ccache.stdenv-riscv64
