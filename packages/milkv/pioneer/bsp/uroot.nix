@@ -22,7 +22,7 @@ flake.ccache.stdenv.mkDerivation rec {
     owner = "milkv-community";
     repo = "u-root";
     rev = "v0.14.0";
-    hash = "";
+    hash = "sha256-8zA3pHf45MdUcq/MA/mf0KCTxB1viHieU/oigYwIPgo=";
   };
 
   phases = [ ];

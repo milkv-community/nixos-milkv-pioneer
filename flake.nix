@@ -103,7 +103,7 @@
             BSP_EDK2 = bsp-edk2;
             BSP_LINUX = bsp-linux;
             BSP_OPENSBI = bsp-opensbi;
-            # BSP_UROOT = bsp-uroot;
+            BSP_UROOT = bsp-uroot;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
               bison
