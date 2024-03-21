@@ -67,4 +67,9 @@
   programs.yamlfmt.enable = true;
   # programs.zig.enable = true;
   # programs.zprint.enable = true;
+  settings.formatter.taplo = {
+    excludes = [
+      "**/gomod2nix.toml"
+    ];
+  };
 }

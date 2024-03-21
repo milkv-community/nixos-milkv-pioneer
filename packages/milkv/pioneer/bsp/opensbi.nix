@@ -50,7 +50,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
-    cp $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
+    cp -a $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
+    cp -a $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
   '';
 }

@@ -63,7 +63,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/Image $out/riscv64_Image
-    cp $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/dts/sophgo/*.dtb $out
+    cp -a $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/Image $out/riscv64_Image
+    cp -a $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/dts/sophgo/*.dtb $out
   '';
 }

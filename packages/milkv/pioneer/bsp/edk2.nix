@@ -105,6 +105,6 @@ flake.ccache.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    cp $SG2042_BSP_EDKII_SRC_DIR/Build/SG2042_EVB/$TARGET\_GCC5/FV/SG2042.fd $out
+    cp -a $SG2042_BSP_EDKII_SRC_DIR/Build/SG2042_EVB/$TARGET\_GCC5/FV/SG2042.fd $out
   '';
 }

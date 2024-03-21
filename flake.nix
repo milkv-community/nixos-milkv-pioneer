@@ -2,6 +2,10 @@
   description = "A Nix flake for building the Milk-V Pioneer BSP";
 
   inputs = {
+    gomod2nix = {
+      url = "github:nix-community/gomod2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # nixos-hardware = {
     #   url = "github:nixos/nixos-hardware";
     #   # inputs.nixpkgs.follows = "nixpkgs"; # NOTE: non-existent
@@ -75,27 +79,34 @@
         formatting = treefmtEval.${pkgs.system}.config.build.check inputs.self;
       });
 
-      scopedPackages = eachSystemPkgs { } (pkgs:
-        let systemFlake = flake.${pkgs.system}; in
+      scopedPackages = eachSystemPkgs
         {
-          milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { flake = systemFlake; });
-          toolchain = recurseIntoAttrs (pkgs.callPackage ./packages/toolchain { flake = systemFlake; });
-        });
+          overlays = [
+            inputs.gomod2nix.overlays.default
+          ];
+        }
+        (pkgs:
+          let systemFlake = flake.${pkgs.system}; in
+          {
+            milkv = recurseIntoAttrs (pkgs.callPackage ./packages/milkv { flake = systemFlake; });
+            toolchain = recurseIntoAttrs (pkgs.callPackage ./packages/toolchain { flake = systemFlake; });
+          });
 
-      packages = eachSystemPkgs { } (pkgs: {
-        milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
-        milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
-        milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
-        milkv-pioneer-bsp-uroot = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.uroot;
-        milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
-      });
+      packages = eachSystemPkgs { }
+        (pkgs: {
+          milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
+          milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
+          milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
+          milkv-pioneer-bsp-uroot-initrd = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.uroot-initrd;
+          milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        });
 
       devShells = eachSystemPkgs { } (pkgs:
         let
           bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
           bsp-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
-          bsp-uroot = packages.${pkgs.system}.milkv-pioneer-bsp-uroot;
+          bsp-uroot-initrd = packages.${pkgs.system}.milkv-pioneer-bsp-uroot-initrd;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
@@ -112,8 +123,8 @@
               BSP_LINUX_SRC = bsp-linux.src;
               BSP_OPENSBI_BIN = bsp-opensbi;
               BSP_OPENSBI_SRC = bsp-opensbi.src;
-              BSP_UROOT_BIN = bsp-uroot;
-              # BSP_UROOT_SRC = bsp-uroot.src;
+              BSP_UROOT_INITRD_BIN = bsp-uroot-initrd;
+              BSP_UROOT_INITRD_SRC = bsp-uroot-initrd.src;
               BSP_ZSBL_BIN = bsp-zsbl;
               BSP_ZSBL_SRC = bsp-zsbl.src;
               nativeBuildInputs = [
@@ -123,7 +134,7 @@
               ++ bsp-edk2.nativeBuildInputs
               ++ bsp-linux.nativeBuildInputs
               ++ bsp-opensbi.nativeBuildInputs
-              ++ bsp-uroot.nativeBuildInputs
+              ++ bsp-uroot-initrd.nativeBuildInputs
               ++ bsp-zsbl.nativeBuildInputs;
             };
         });
