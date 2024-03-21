@@ -9,7 +9,7 @@
 # For reference, see the `build_rv_sbi` function in `scripts/envsetup.sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-flake.ccache.stdenv-riscv64.mkDerivation rec {
+flake.ccache.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-opensbi";
   version = "0.0.0";
 
