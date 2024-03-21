@@ -99,7 +99,7 @@
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
             BSP_EDK2 = bsp-edk2;
-            BSP_SRC_LINUX = bsp-linux;
+            BSP_LINUX = bsp-linux;
             BSP_OPENSBI = bsp-opensbi;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
