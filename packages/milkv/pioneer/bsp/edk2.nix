@@ -24,12 +24,9 @@ flake.ccache.stdenv.mkDerivation rec {
   version = "0.0.0";
 
   nativeBuildInputs = with pkgs; [
-    breakpointHook
-    libuuid
-    # NOTE: The riscv64-embedded targetting `gcc`. We use this version (with the `stdenv` path)
-    # rather than the `pkgsCross.riscv64-embedded.buildPackages.gcc`, because the latter seemingly
-    # does not set the `targetPrefix` attribute, which we use below to set `GCC5_RISCV64_PREFIX`.
+    # breakpointHook
     flake.ccache.stdenv-riscv64-embedded.cc
+    libuuid
     python3
   ];
 

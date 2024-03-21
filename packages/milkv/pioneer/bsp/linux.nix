@@ -4,6 +4,10 @@ flake.ccache.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-linux";
   version = "6.8";
 
+  nativeBuildInputs = pkgs.linuxPackages_6_8.kernel.nativeBuildInputs ++ [
+    flake.ccache.stdenv-riscv64.cc
+  ];
+
   src = pkgs.fetchFromGitHub {
     owner = "milkv-community";
     repo = "linux";

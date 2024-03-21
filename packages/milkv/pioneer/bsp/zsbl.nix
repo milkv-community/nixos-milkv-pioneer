@@ -17,6 +17,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   nativeBuildInputs = with pkgs; [
     # breakpointHook
+    flake.ccache.stdenv-riscv64.cc
     bison
     flex
     gcc
