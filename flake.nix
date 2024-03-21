@@ -99,7 +99,7 @@
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
-          default = pkgs.pkgsCross.riscv64.mkShell {
+          default = pkgs.mkShell {
             BSP_EDK2_BIN = bsp-edk2;
             BSP_EDK2_SRC = bsp-edk2.src-edk2;
             BSP_EDK2_PLATFORMS_SRC = bsp-edk2.src-edk2-platforms;
