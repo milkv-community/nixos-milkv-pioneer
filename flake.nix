@@ -86,6 +86,7 @@
         milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
         milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
         milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
+        milkv-pioneer-bsp-uroot = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.uroot;
         milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
       });
 
@@ -94,13 +95,15 @@
           bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
           bsp-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux;
           bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
+          bsp-uroot = packages.${pkgs.system}.milkv-pioneer-bsp-uroot;
           bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
-            BSP_EDK2 = bsp-edk2;
+            # BSP_EDK2 = bsp-edk2;
             BSP_LINUX = bsp-linux;
             BSP_OPENSBI = bsp-opensbi;
+            # BSP_UROOT = bsp-uroot;
             BSP_ZSBL = bsp-zsbl;
             nativeBuildInputs = with pkgs; [
               bison
