@@ -100,7 +100,7 @@
         in
         {
           default = pkgs.pkgsCross.riscv64.mkShell {
-            # BSP_EDK2 = bsp-edk2;
+            BSP_EDK2 = bsp-edk2;
             BSP_LINUX = bsp-linux;
             BSP_OPENSBI = bsp-opensbi;
             # BSP_UROOT = bsp-uroot;
