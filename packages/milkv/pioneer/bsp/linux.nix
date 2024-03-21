@@ -1,6 +1,6 @@
 { flake, pkgs, ... }:
 
-pkgs.stdenv.mkDerivation rec {
+flake.ccache.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-linux";
   version = "6.8";
 
