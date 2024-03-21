@@ -1,5 +1,13 @@
 { flake, pkgs, ... }:
 
+# This derivation builds the linux kernel artifact from the Sophgo SG2042 bsp.
+#
+# For reference, see the upstream zsbl repositories:
+#   https://github.com/sophgo/linux-riscv
+#
+# For reference, see the `build_rv_kernel` function in `scripts/envsetup. sh`:
+#   https://github.com/sophgo/bootloader-riscv
+
 flake.ccache.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-linux";
   version = "6.8";
