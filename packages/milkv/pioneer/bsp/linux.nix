@@ -4,7 +4,8 @@ flake.ccache.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-linux";
   version = "6.8";
 
-  nativeBuildInputs = pkgs.linuxPackages_6_8.kernel.nativeBuildInputs ++ [
+  nativeBuildInputs = with pkgs; linuxPackages_6_8.kernel.nativeBuildInputs ++ [
+    breakpointHook
     flake.ccache.stdenv-riscv64.cc
   ];
 
@@ -21,7 +22,7 @@ flake.ccache.stdenv.mkDerivation rec {
   CHIP = "mango";
   KERNEL_VARIANT = "minimum";
   LOCALVERSION = "milkv-community";
-  SG2042_BSP_LINUX_KERNEL_CONFIG = "${VENDOR}_${CHIP}_${KERNEL_VARIANT}_defconfig";
+  SG2042_BSP_LINUX_CONFIG = "${VENDOR}_${CHIP}_${KERNEL_VARIANT}_defconfig";
   SG2042_BSP_LINUX_SRC_DIR = "/build/${src.repo}";
   SG2042_BSP_LINUX_BUILD_DIR = "${SG2042_BSP_LINUX_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
@@ -32,7 +33,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   buildPhase = ''
     pushd $SG2042_BSP_LINUX_SRC_DIR
-      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$RV_KERNEL_BUILD_DIR ARCH=riscv $RV_KERNEL_CONFIG
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$SG2042_BSP_LINUX_BUILD_DIR ARCH=riscv $SG2042_BSP_LINUX_CONFIG
       err=$?
     popd
 
@@ -42,7 +43,7 @@ flake.ccache.stdenv.mkDerivation rec {
     fi
 
     pushd $SG2042_BSP_LINUX_BUILD_DIR
-      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$RV_KERNEL_BUILD_DIR LOCALVERESION=$LOCALVERSION ARCH=riscv Image dtbs modules
+      make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$SG2042_BSP_LINUX_BUILD_DIR LOCALVERESION=$LOCALVERSION ARCH=riscv Image dtbs modules
       err=$?
     popd
 
