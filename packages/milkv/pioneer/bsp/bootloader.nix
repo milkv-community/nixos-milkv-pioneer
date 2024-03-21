@@ -49,12 +49,12 @@ flake.ccache.stdenv.mkDerivation rec {
 
   installPhase = ''
     cp $SG2042_BSP_BOOTLOADER_SRC_DIR/firmware/fip.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
+    cp ${bsp.edk2}/SG2042.fd $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.linux}/*.dtb $SG2042_BSP_BOOTLOADER_BUILD_DIR
-    cp ${bsp.opensbi}/fw_dynamic.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.linux}/riscv64_Image $SG2042_BSP_BOOTLOADER_BUILD_DIR
+    cp ${bsp.opensbi}/fw_dynamic.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.uroot-initrd}/initrd.img $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.zsbl}/zsbl.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
-    cp ${bsp.edk2}/SG2042.fd $SG2042_BSP_BOOTLOADER_BUILD_DIR
 
     pushd $SG2042_BSP_BOOTLOADER_BUILD_DIR
       dtb_group=$(ls *.dtb | awk '{print ""$1" "$1" 0x020000000 "}')
