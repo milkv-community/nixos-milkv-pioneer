@@ -105,11 +105,16 @@
             BSP_OPENSBI = bsp-opensbi;
             BSP_UROOT = bsp-uroot;
             BSP_ZSBL = bsp-zsbl;
-            nativeBuildInputs = with pkgs; [
-              bison
-              flex
-              go
-            ];
+            nativeBuildInputs = [
+              flake.${pkgs.system}.ccache.stdenv
+              flake.${pkgs.system}.ccache.stdenv-riscv64
+              flake.${pkgs.system}.ccache.stdenv-riscv64-embedded
+            ]
+            ++ bsp-edk2.nativeBuildInputs
+            ++ bsp-linux.nativeBuildInputs
+            ++ bsp-opensbi.nativeBuildInputs
+            ++ bsp-uroot.nativeBuildInputs
+            ++ bsp-zsbl.nativeBuildInputs;
           };
         });
     };
