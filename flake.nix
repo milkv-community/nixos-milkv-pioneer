@@ -93,23 +93,23 @@
           });
 
       packages = eachSystemPkgs { }
-        (pkgs: {
-          milkv-pioneer-bsp-edk2 = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.edk2;
-          milkv-pioneer-bsp-bootloader = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.bootloader;
-          milkv-pioneer-bsp-linux = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.linux;
-          milkv-pioneer-bsp-opensbi = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.opensbi;
-          milkv-pioneer-bsp-uroot-initrd = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.uroot-initrd;
-          milkv-pioneer-bsp-zsbl = scopedPackages.${pkgs.system}.milkv.pioneer.bsp.zsbl;
+        (pkgs: with scopedPackages.${pkgs.system}; {
+          milkv-pioneer-bsp-edk2 = milkv.pioneer.bsp.edk2;
+          milkv-pioneer-bsp-bootloader = milkv.pioneer.bsp.bootloader;
+          milkv-pioneer-bsp-linux = milkv.pioneer.bsp.linux;
+          milkv-pioneer-bsp-opensbi = milkv.pioneer.bsp.opensbi;
+          milkv-pioneer-bsp-uroot-initrd = milkv.pioneer.bsp.uroot-initrd;
+          milkv-pioneer-bsp-zsbl = milkv.pioneer.bsp.zsbl;
         });
 
-      devShells = eachSystemPkgs { } (pkgs:
+      devShells = eachSystemPkgs { } (pkgs: with packages.${pkgs.system};
         let
-          bsp-edk2 = packages.${pkgs.system}.milkv-pioneer-bsp-edk2;
-          bsp-bootloader = packages.${pkgs.system}.milkv-pioneer-bsp-bootloader;
-          bsp-linux = packages.${pkgs.system}.milkv-pioneer-bsp-linux;
-          bsp-opensbi = packages.${pkgs.system}.milkv-pioneer-bsp-opensbi;
-          bsp-uroot-initrd = packages.${pkgs.system}.milkv-pioneer-bsp-uroot-initrd;
-          bsp-zsbl = packages.${pkgs.system}.milkv-pioneer-bsp-zsbl;
+          bsp-edk2 = milkv-pioneer-bsp-edk2;
+          bsp-bootloader = milkv-pioneer-bsp-bootloader;
+          bsp-linux = milkv-pioneer-bsp-linux;
+          bsp-opensbi = milkv-pioneer-bsp-opensbi;
+          bsp-uroot-initrd = milkv-pioneer-bsp-uroot-initrd;
+          bsp-zsbl = milkv-pioneer-bsp-zsbl;
         in
         {
           default = pkgs.mkShell {
@@ -126,19 +126,19 @@
             BSP_UROOT_INITRD_SRC = bsp-uroot-initrd.src;
             BSP_ZSBL_BIN = bsp-zsbl;
             BSP_ZSBL_SRC = bsp-zsbl.src;
-            nativeBuildInputs = pkgs.lib.filter
-              (p: ! pkgs.lib.elem p [
+            nativeBuildInputs = with pkgs; lib.filter
+              (p: ! lib.elem p [
                 # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
                 # so just remove the ccache stdenvs from the shell environment.
-                flake.${pkgs.system}.ccache.stdenv.cc
-                flake.${pkgs.system}.ccache.stdenv-riscv64.cc
-                flake.${pkgs.system}.ccache.stdenv-riscv64-embedded.cc
+                flake.${system}.ccache.stdenv.cc
+                flake.${system}.ccache.stdenv-riscv64.cc
+                flake.${system}.ccache.stdenv-riscv64-embedded.cc
               ])
               ([
                 # NOTE: Replace the removed ccache stdenvs with non-caching variants.
-                pkgs.stdenv.cc
-                pkgs.pkgsCross.riscv64.stdenv.cc
-                pkgs.pkgsCross.riscv64-embedded.stdenv.cc
+                stdenv.cc
+                pkgsCross.riscv64.stdenv.cc
+                pkgsCross.riscv64-embedded.stdenv.cc
               ]
               ++ bsp-edk2.nativeBuildInputs
               ++ bsp-bootloader.nativeBuildInputs
