@@ -33,6 +33,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   phases = [
     "unpackPhase"
+    "preBuild"
     "buildPhase"
     "installPhase"
   ];
@@ -42,11 +43,8 @@ flake.ccache.stdenv.mkDerivation rec {
     chmod -R u+w $SG2042_BSP_BOOTLOADER_SRC_DIR
   '';
 
-  buildPhase = ''
+  preBuild = ''
     mkdir -p $SG2042_BSP_BOOTLOADER_BUILD_DIR
-
-    $CC -g -Wall $SG2042_BSP_BOOTLOADER_SRC_DIR/scripts/gen_spi_flash.c -o $SG2042_BSP_BOOTLOADER_BUILD_DIR/gen_spi_flash
-
     cp $SG2042_BSP_BOOTLOADER_SRC_DIR/firmware/fip.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.edk2}/SG2042.fd $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.linux}/*.dtb $SG2042_BSP_BOOTLOADER_BUILD_DIR
@@ -54,7 +52,10 @@ flake.ccache.stdenv.mkDerivation rec {
     cp ${bsp.opensbi}/fw_dynamic.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.uroot-initrd}/initrd.img $SG2042_BSP_BOOTLOADER_BUILD_DIR
     cp ${bsp.zsbl}/zsbl.bin $SG2042_BSP_BOOTLOADER_BUILD_DIR
+  '';
 
+  buildPhase = ''
+    $CC -g -Wall $SG2042_BSP_BOOTLOADER_SRC_DIR/scripts/gen_spi_flash.c -o $SG2042_BSP_BOOTLOADER_BUILD_DIR/gen_spi_flash
     pushd $SG2042_BSP_BOOTLOADER_BUILD_DIR
       dtb_group=$(ls *.dtb | awk '{print ""$1" "$1" 0x020000000 "}')
       ./gen_spi_flash $dtb_group \
