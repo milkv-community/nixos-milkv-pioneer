@@ -57,13 +57,12 @@ flake.ccache.stdenv.mkDerivation rec {
   buildPhase = ''
     pushd $SG2042_BSP_BOOTLOADER_BUILD_DIR
       $CC -g -Wall $SG2042_BSP_BOOTLOADER_SRC_DIR/scripts/gen_spi_flash.c -o gen_spi_flash
-      dtb_group=$(ls *.dtb | awk '{print ""$1" "$1" 0x020000000 "}')
-      ./gen_spi_flash $dtb_group \
-        fw_dynamic.bin fw_dynamic.bin 0x00000000 \
-        riscv64_Image riscv64_Image 0x02000000 \
-        initrd.img initrd.img 0x30000000 \
-        zsbl.bin zsbl.bin 0x40000000 \
-        SG2042.fd SG2042.fd 0x02000000
+      ./gen_spi_flash $(ls *.dtb | awk '{print ""$1" "$1" 0x020000000 "}') \
+          fw_dynamic.bin fw_dynamic.bin 0x00000000 \
+          riscv64_Image riscv64_Image 0x02000000 \
+          initrd.img initrd.img 0x30000000 \
+          zsbl.bin zsbl.bin 0x40000000 \
+          SG2042.fd SG2042.fd 0x02000000
     popd
   '';
 
