@@ -59,6 +59,6 @@ flake.ccache.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out
-    virt-make-fs --partition --size=268MB --format=raw --type=vfat $SG2042_BSP_BOOTLOADER_EFI_DIR $out/firmware.img
+    cp firmware.img $out/firmware.img
   '';
 }
