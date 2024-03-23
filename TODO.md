@@ -9,3 +9,7 @@
 - Github actions alerting when upstream is updated with new commits
 - Pass unified environment into derivations
 - Use mold linker (see `useMoldLinker` stdenv adapter)
+- Switch to nixos provided packages
+  - Switch to release versions
+  - Include patches from milkv-community repos
+  - Use stacked git for patches
