@@ -13,19 +13,6 @@ pkgs.buildGoApplication {
   pname = "milkv-pioneer-bsp-uroot";
   version = "0.0.0";
 
-  # nativeBuildInputs = with pkgs; [
-  #   breakpointHook
-  # ];
-
-  modules = ./uroot/gomod2nix.toml;
-
-  src = pkgs.fetchFromGitHub {
-    owner = "milkv-community";
-    repo = "u-root";
-    rev = "v0.14.0";
-    hash = "sha256-8zA3pHf45MdUcq/MA/mf0KCTxB1viHieU/oigYwIPgo=";
-  };
-
   # NOTE: This is necessary for `GOROOT` to be set in the build environment when `./u-root` is
   # called in the installPhase below. Without it, the call to `./u-root` will fail with an error
   # about an empty `GOROOT`.
@@ -35,6 +22,24 @@ pkgs.buildGoApplication {
   # issues in the sandbox. Overall it doesn't seem worth fixing these in `preBuild` and enabling
   # checks, especially since we don't use or even build most of the commands.
   doCheck = false;
+
+  modules = ./uroot/gomod2nix.toml;
+
+  # nativeBuildInputs = with pkgs; [
+  #   breakpointHook
+  # ];
+
+  src = pkgs.fetchFromGitHub {
+    owner = "milkv-community";
+    repo = "u-root";
+    rev = "v0.14.0";
+    hash = "sha256-8zA3pHf45MdUcq/MA/mf0KCTxB1viHieU/oigYwIPgo=";
+  };
+
+  # phases = [
+  #   "buildPhase"
+  #   "installPhase"
+  # ];
 
   buildPhase = ''
     go build

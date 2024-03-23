@@ -29,6 +29,24 @@ flake.ccache.stdenv.mkDerivation rec {
   SG2042_BSP_BOOTLOADER_SRC_DIR = "/build/${src.repo}";
   SG2042_BSP_BOOTLOADER_EFI_DIR = "${SG2042_BSP_BOOTLOADER_SRC_DIR}/efi";
 
+  conf-ini = pkgs.writeText "${pname}+conf.ini" ''
+    [sophgo-config]
+
+    [devicetree]
+    name = mango-milkv-pioneer.dtb
+
+    [kernel]
+    name = riscv64_Image
+
+    [firmware]
+    name = fw_dynamic.bin
+
+    [ramfs]
+    name = initrd.img
+
+    [eof]
+  '';
+
   phases = [
     "unpackPhase"
     "preBuild"
@@ -43,6 +61,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   preBuild = ''
     mkdir -p $SG2042_BSP_BOOTLOADER_EFI_DIR/riscv64
+    cp ${conf-ini} $SG2042_BSP_BOOTLOADER_EFI_DIR/riscv64/conf.ini
     cp $SG2042_BSP_BOOTLOADER_SRC_DIR/firmware/fip.bin $SG2042_BSP_BOOTLOADER_EFI_DIR
     cp ${bsp.edk2}/SG2042.fd $SG2042_BSP_BOOTLOADER_EFI_DIR/riscv64
     cp ${bsp.linux}/*.dtb $SG2042_BSP_BOOTLOADER_EFI_DIR/riscv64
