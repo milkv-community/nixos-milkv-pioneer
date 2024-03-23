@@ -105,51 +105,53 @@
 
       devShells = eachSystemPkgs { } (pkgs: with packages.${pkgs.system};
         let
-          bsp-edk2 = milkv-pioneer-bsp-edk2;
-          bsp-bootloader-raw-image = milkv-pioneer-bsp-bootloader-raw-image;
-          bsp-bootloader-spi-flash = milkv-pioneer-bsp-bootloader-spi-flash;
-          bsp-linux = milkv-pioneer-bsp-linux;
-          bsp-opensbi = milkv-pioneer-bsp-opensbi;
-          bsp-uroot-initrd = milkv-pioneer-bsp-uroot-initrd;
-          bsp-zsbl = milkv-pioneer-bsp-zsbl;
+          cachingStdenvs = with pkgs; [
+            # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
+            # so just remove the ccache stdenvs from the shell environment.
+            flake.${system}.ccache.stdenv.cc
+            flake.${system}.ccache.stdenv-riscv64.cc
+            flake.${system}.ccache.stdenv-riscv64-embedded.cc
+          ];
+          nonCachingStdenvs = with pkgs; [
+            # NOTE: Replace the removed ccache stdenvs with non-caching variants.
+            stdenv.cc
+            pkgsCross.riscv64.stdenv.cc
+            pkgsCross.riscv64-embedded.stdenv.cc
+          ];
         in
         {
           default = pkgs.mkShell {
-            BSP_EDK2 = bsp-edk2;
-            BSP_EDK2_SRC = bsp-edk2.src-edk2;
-            BSP_EDK2_PLATFORMS_SRC = bsp-edk2.src-edk2-platforms;
-            BSP_EDK2_NON_OSI_SRC = bsp-edk2.src-edk2-non-osi;
-            BSP_BOOTLOADER_RAW_IMAGE = bsp-bootloader-raw-image;
-            BSP_BOOTLOADER_SPI_FLASH = bsp-bootloader-spi-flash;
-            BSP_LINUX = bsp-linux;
-            BSP_LINUX_SRC = bsp-linux.src;
-            BSP_OPENSBI = bsp-opensbi;
-            BSP_OPENSBI_SRC = bsp-opensbi.src;
-            BSP_UROOT_INITRD = bsp-uroot-initrd;
-            BSP_UROOT_INITRD_SRC = bsp-uroot-initrd.src;
-            BSP_ZSBL = bsp-zsbl;
-            BSP_ZSBL_SRC = bsp-zsbl.src;
+            # NOTE: These environment variables provide access to the build sources.
+            BSP_EDK2_SRC = milkv-pioneer-bsp-edk2.src-edk2;
+            BSP_EDK2_PLATFORMS_SRC = milkv-pioneer-bsp-edk2.src-edk2-platforms;
+            BSP_EDK2_NON_OSI_SRC = milkv-pioneer-bsp-edk2.src-edk2-non-osi;
+            BSP_LINUX_SRC = milkv-pioneer-bsp-linux.src;
+            BSP_OPENSBI_SRC = milkv-pioneer-bsp-opensbi.src;
+            BSP_UROOT_INITRD_SRC = milkv-pioneer-bsp-uroot-initrd.src;
+            BSP_ZSBL_SRC = milkv-pioneer-bsp-zsbl.src;
+
+            # NOTE: These environment variables provide access to the build outputs.
+            BSP_EDK2 = milkv-pioneer-bsp-edk2;
+            BSP_BOOTLOADER_RAW_IMAGE = milkv-pioneer-bsp-bootloader-raw-image;
+            BSP_BOOTLOADER_SPI_FLASH = milkv-pioneer-bsp-bootloader-spi-flash;
+            BSP_LINUX = milkv-pioneer-bsp-linux;
+            BSP_OPENSBI = milkv-pioneer-bsp-opensbi;
+            BSP_UROOT_INITRD = milkv-pioneer-bsp-uroot-initrd;
+            BSP_ZSBL = milkv-pioneer-bsp-zsbl;
+
+            # NOTE: The nativeBuildInputs constitute the available packages and tools in the shell.
             nativeBuildInputs = with pkgs; lib.filter
-              (pkg: ! lib.elem pkg [
-                # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
-                # so just remove the ccache stdenvs from the shell environment.
-                flake.${system}.ccache.stdenv.cc
-                flake.${system}.ccache.stdenv-riscv64.cc
-                flake.${system}.ccache.stdenv-riscv64-embedded.cc
-              ])
-              ([
-                # NOTE: Replace the removed ccache stdenvs with non-caching variants.
-                stdenv.cc
-                pkgsCross.riscv64.stdenv.cc
-                pkgsCross.riscv64-embedded.stdenv.cc
-              ]
-              ++ bsp-edk2.nativeBuildInputs
-              ++ bsp-bootloader-raw-image.nativeBuildInputs
-              ++ bsp-bootloader-spi-flash.nativeBuildInputs
-              ++ bsp-linux.nativeBuildInputs
-              ++ bsp-opensbi.nativeBuildInputs
-              ++ bsp-uroot-initrd.nativeBuildInputs
-              ++ bsp-zsbl.nativeBuildInputs);
+              (pkg: ! lib.elem pkg cachingStdenvs)
+              (
+                nonCachingStdenvs
+                ++ milkv-pioneer-bsp-edk2.nativeBuildInputs
+                ++ milkv-pioneer-bsp-bootloader-raw-image.nativeBuildInputs
+                ++ milkv-pioneer-bsp-bootloader-spi-flash.nativeBuildInputs
+                ++ milkv-pioneer-bsp-linux.nativeBuildInputs
+                ++ milkv-pioneer-bsp-opensbi.nativeBuildInputs
+                ++ milkv-pioneer-bsp-uroot-initrd.nativeBuildInputs
+                ++ milkv-pioneer-bsp-zsbl.nativeBuildInputs
+              );
           };
         });
     };
