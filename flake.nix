@@ -36,7 +36,7 @@
     in
     rec {
       flake = eachSystemPkgs { } (pkgs: {
-        ccache = rec {
+        ccache = with pkgs; rec {
           extraConfig = ''
             export CCACHE_MAXSIZE=20G
             export CCACHE_COMPILERCHECK=content
@@ -61,15 +61,15 @@
               exit 1
             fi
           '';
-          stdenv = pkgs.ccacheStdenv.override {
+          stdenv = stdenvAdapters.useMoldLinker (ccacheStdenv.override {
             inherit extraConfig;
-          };
-          stdenv-riscv64 = pkgs.pkgsCross.riscv64.ccacheStdenv.override {
+          });
+          stdenv-riscv64 = stdenvAdapters.useMoldLinker (pkgsCross.riscv64.ccacheStdenv.override {
             inherit extraConfig;
-          };
-          stdenv-riscv64-embedded = pkgs.pkgsCross.riscv64-embedded.ccacheStdenv.override {
+          });
+          stdenv-riscv64-embedded = stdenvAdapters.useMoldLinker (pkgsCross.riscv64-embedded.ccacheStdenv.override {
             inherit extraConfig;
-          };
+          });
         };
       });
 
