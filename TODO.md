@@ -15,3 +15,4 @@
   - Use stacked git for patches
 - Create a separate flake for u-root
 - Setup cachix
+- Split up phases more and be sure to use pre/post hooks
