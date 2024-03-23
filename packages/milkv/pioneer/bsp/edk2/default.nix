@@ -70,6 +70,8 @@ flake.ccache.stdenv.mkDerivation rec {
   TARGET = "RELEASE";
 
   unpackPhase = ''
+    runHook preUnpack
+
     mkdir $sourceRoot
 
     cp -a ${src-edk2} $SG2042_BSP_EDKII_SRC_DIR/edk2
@@ -80,13 +82,21 @@ flake.ccache.stdenv.mkDerivation rec {
 
     cp -a ${src-edk2-non-osi} $SG2042_BSP_EDKII_SRC_DIR/edk2-non-osi
     chmod -R u+w $SG2042_BSP_EDKII_SRC_DIR/edk2-non-osi
+
+    runHook postUnpack
   '';
 
   patchPhase = ''
+    runHook prePatch
+
     patchShebangs $SG2042_BSP_EDKII_SRC_DIR/edk2/BaseTools/BinWrappers/PosixLike
+
+    runHook postPatch
   '';
 
   buildPhase = ''
+    runHook preBuild
+
     export WORKSPACE=$SG2042_BSP_EDKII_SRC_DIR
     export PACKAGES_PATH=$WORKSPACE/edk2:$WORKSPACE/edk2-platforms:$WORKSPACE/edk2-non-osi
     export EDK_TOOLS_PATH=$WORKSPACE/edk2/BaseTools
@@ -101,10 +111,16 @@ flake.ccache.stdenv.mkDerivation rec {
     make -j$NIX_BUILD_CORES -C edk2/BaseTools
 
     build -n $NIX_BUILD_CORES --arch=RISCV64 --tagname=GCC5 --buildtarget=$TARGET --define=X64EMU_ENABLE --platform=Platform/Sophgo/SG2042_EVB_Board/SG2042.dsc
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out
     cp -a $SG2042_BSP_EDKII_SRC_DIR/Build/SG2042_EVB/$TARGET\_GCC5/FV/SG2042.fd $out
+
+    runHook postInstall
   '';
 }

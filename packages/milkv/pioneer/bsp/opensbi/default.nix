@@ -31,26 +31,42 @@ flake.ccache.stdenv.mkDerivation rec {
   SG2042_BSP_SBI_SRC_DIR = "/build/${src.repo}";
 
   unpackPhase = ''
+    runHook preUnpack
+
     cp -a $src $SG2042_BSP_SBI_SRC_DIR
     chmod -R u+w $SG2042_BSP_SBI_SRC_DIR
+
+    runHook postUnpack
   '';
 
   patchPhase = ''
+    runHook prePatch
+
     patchShebangs $SG2042_BSP_SBI_SRC_DIR/scripts
+
+    runHook postPatch
   '';
 
   # TODO:
   # - disable BUILD_INFO
   # - disable DEBUG_INFO
   buildPhase = ''
+    runHook preBuild
+
     pushd $SG2042_BSP_SBI_SRC_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE PLATFORM=$PLATFORM FW_PIC=y BUILD_INFO=y DEBUG=1
     popd
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out
     cp -a $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.bin $out
     cp -a $SG2042_BSP_SBI_SRC_DIR/build/platform/$PLATFORM/firmware/fw_dynamic.elf $out
+
+    runHook postInstall
   '';
 }

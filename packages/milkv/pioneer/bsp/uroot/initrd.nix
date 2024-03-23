@@ -36,17 +36,21 @@ pkgs.buildGoApplication {
     hash = "sha256-8zA3pHf45MdUcq/MA/mf0KCTxB1viHieU/oigYwIPgo=";
   };
 
-  # phases = [
-  #   "buildPhase"
-  #   "installPhase"
-  # ];
-
   buildPhase = ''
+    runHook preBuild
+
     go build
+    GOOS=linux GOARCH=riscv64 ./u-root -build bb -uinitcmd="boot" -o initrd.img core boot
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out
-    GOOS=linux GOARCH=riscv64 ./u-root -build bb -uinitcmd="boot" -o $out/initrd.img core boot
+    cp initrd.img $out/initrd.img
+
+    runHook postInstall
   '';
 }

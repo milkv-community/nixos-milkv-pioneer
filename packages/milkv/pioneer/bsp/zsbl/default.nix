@@ -37,34 +37,50 @@ flake.ccache.stdenv.mkDerivation rec {
   SG2042_BSP_ZSBL_BUILD_DIR = "${SG2042_BSP_ZSBL_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
   unpackPhase = ''
+    runHook preUnpack
+
     cp -a $src $SG2042_BSP_ZSBL_SRC_DIR
     chmod -R u+w $SG2042_BSP_ZSBL_SRC_DIR
+
+    runHook postUnpack
   '';
 
-  buildPhase = ''
+  configurePhase = ''
+    runHook preConfigure
+
     pushd $SG2042_BSP_ZSBL_SRC_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$SG2042_BSP_ZSBL_BUILD_DIR ARCH=riscv sg2042_defconfig
       err=$?
     popd
-
     if [ $err -ne 0 ]; then
       echo "making zsbl config failed"
       return $err
     fi
 
+    runHook postConfigure
+  '';
+
+  buildPhase = ''
+    runHook preBuild
+
     pushd $SG2042_BSP_ZSBL_BUILD_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE ARCH=riscv
       err=$?
     popd
-
     if [ $err -ne 0 ]; then
       echo "making zsbl failed"
       return $err
     fi
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out
     cp -a $SG2042_BSP_ZSBL_BUILD_DIR/zsbl.bin $out
+
+    runHook postInstall
   '';
 }

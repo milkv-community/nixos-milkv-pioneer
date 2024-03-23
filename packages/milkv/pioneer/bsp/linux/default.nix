@@ -35,11 +35,17 @@ flake.ccache.stdenv.mkDerivation rec {
   SG2042_BSP_LINUX_BUILD_DIR = "${SG2042_BSP_LINUX_SRC_DIR}/build/${CHIP}/${KERNEL_VARIANT}";
 
   unpackPhase = ''
+    runHook preUnpack
+
     cp -a $src $SG2042_BSP_LINUX_SRC_DIR
     chmod -R u+w $SG2042_BSP_LINUX_SRC_DIR
+
+    runHook postUnpack
   '';
 
   buildPhase = ''
+    runHook preBuild
+
     pushd $SG2042_BSP_LINUX_SRC_DIR
       make -j$NIX_BUILD_CORES CROSS_COMPILE=$RISCV64_LINUX_CROSS_COMPILE O=$SG2042_BSP_LINUX_BUILD_DIR ARCH=riscv $SG2042_BSP_LINUX_CONFIG
       err=$?
@@ -59,11 +65,17 @@ flake.ccache.stdenv.mkDerivation rec {
       echo "making kernel failed"
       return $err
     fi
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out
     cp -a $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/Image $out/riscv64_Image
     cp -a $SG2042_BSP_LINUX_BUILD_DIR/arch/riscv/boot/dts/sophgo/*.dtb $out
+
+    runHook postInstall
   '';
 }
