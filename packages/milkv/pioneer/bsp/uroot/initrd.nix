@@ -23,7 +23,7 @@ pkgs.buildGoApplication {
   # checks, especially since we don't use or even build most of the commands.
   doCheck = false;
 
-  modules = ./uroot/gomod2nix.toml;
+  modules = ./gomod2nix.toml;
 
   # nativeBuildInputs = with pkgs; [
   #   breakpointHook
