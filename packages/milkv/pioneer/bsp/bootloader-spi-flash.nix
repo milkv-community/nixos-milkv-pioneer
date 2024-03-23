@@ -1,15 +1,12 @@
 { bsp, flake, pkgs, ... }:
 
-# This derivation builds the zsbl artifact from the Sophgo SG2042 bsp.
+# This derivation builds the booloader spi flash artifact from the Sophgo SG2042 bsp.
 #
-# For reference, see the upstream zsbl repositories:
-#   https://github.com/sophgo/zsbl
-#
-# For reference, see the `build_rv_zsbl` function in `scripts/envsetup. sh`:
+# For reference, see the `build_rv_fimware_bin` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
 flake.ccache.stdenv.mkDerivation rec {
-  pname = "milkv-pioneer-bsp-bootloader";
+  pname = "milkv-pioneer-bsp-bootloader-spi-flash";
   version = "0.0.0";
 
   nativeBuildInputs = [

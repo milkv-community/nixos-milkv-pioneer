@@ -94,8 +94,9 @@
 
       packages = eachSystemPkgs { }
         (pkgs: with scopedPackages.${pkgs.system}; {
+          milkv-pioneer-bsp-bootloader-raw-image = milkv.pioneer.bsp.bootloader-raw-image;
+          milkv-pioneer-bsp-bootloader-spi-flash = milkv.pioneer.bsp.bootloader-spi-flash;
           milkv-pioneer-bsp-edk2 = milkv.pioneer.bsp.edk2;
-          milkv-pioneer-bsp-bootloader = milkv.pioneer.bsp.bootloader;
           milkv-pioneer-bsp-linux = milkv.pioneer.bsp.linux;
           milkv-pioneer-bsp-opensbi = milkv.pioneer.bsp.opensbi;
           milkv-pioneer-bsp-uroot-initrd = milkv.pioneer.bsp.uroot-initrd;
@@ -105,7 +106,8 @@
       devShells = eachSystemPkgs { } (pkgs: with packages.${pkgs.system};
         let
           bsp-edk2 = milkv-pioneer-bsp-edk2;
-          bsp-bootloader = milkv-pioneer-bsp-bootloader;
+          bsp-bootloader-raw-image = milkv-pioneer-bsp-bootloader-raw-image;
+          bsp-bootloader-spi-flash = milkv-pioneer-bsp-bootloader-spi-flash;
           bsp-linux = milkv-pioneer-bsp-linux;
           bsp-opensbi = milkv-pioneer-bsp-opensbi;
           bsp-uroot-initrd = milkv-pioneer-bsp-uroot-initrd;
@@ -113,21 +115,22 @@
         in
         {
           default = pkgs.mkShell {
-            BSP_EDK2_BIN = bsp-edk2;
+            BSP_EDK2 = bsp-edk2;
             BSP_EDK2_SRC = bsp-edk2.src-edk2;
             BSP_EDK2_PLATFORMS_SRC = bsp-edk2.src-edk2-platforms;
             BSP_EDK2_NON_OSI_SRC = bsp-edk2.src-edk2-non-osi;
-            BSP_BOOTLOADER_BIN = bsp-bootloader;
-            BSP_LINUX_BIN = bsp-linux;
+            BSP_BOOTLOADER_RAW_IMAGE = bsp-bootloader-raw-image;
+            BSP_BOOTLOADER_SPI_FLASH = bsp-bootloader-spi-flash;
+            BSP_LINUX = bsp-linux;
             BSP_LINUX_SRC = bsp-linux.src;
-            BSP_OPENSBI_BIN = bsp-opensbi;
+            BSP_OPENSBI = bsp-opensbi;
             BSP_OPENSBI_SRC = bsp-opensbi.src;
-            BSP_UROOT_INITRD_BIN = bsp-uroot-initrd;
+            BSP_UROOT_INITRD = bsp-uroot-initrd;
             BSP_UROOT_INITRD_SRC = bsp-uroot-initrd.src;
-            BSP_ZSBL_BIN = bsp-zsbl;
+            BSP_ZSBL = bsp-zsbl;
             BSP_ZSBL_SRC = bsp-zsbl.src;
             nativeBuildInputs = with pkgs; lib.filter
-              (p: ! lib.elem p [
+              (pkg: ! lib.elem pkg [
                 # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
                 # so just remove the ccache stdenvs from the shell environment.
                 flake.${system}.ccache.stdenv.cc
@@ -141,7 +144,8 @@
                 pkgsCross.riscv64-embedded.stdenv.cc
               ]
               ++ bsp-edk2.nativeBuildInputs
-              ++ bsp-bootloader.nativeBuildInputs
+              ++ bsp-bootloader-raw-image.nativeBuildInputs
+              ++ bsp-bootloader-spi-flash.nativeBuildInputs
               ++ bsp-linux.nativeBuildInputs
               ++ bsp-opensbi.nativeBuildInputs
               ++ bsp-uroot-initrd.nativeBuildInputs
