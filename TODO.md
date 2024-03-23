@@ -13,3 +13,5 @@
   - Switch to release versions
   - Include patches from milkv-community repos
   - Use stacked git for patches
+- Create a separate flake for u-root
+- Setup cachix
