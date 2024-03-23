@@ -5,7 +5,7 @@
 # For reference, see the `build_rv_fimware_image` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-flake.ccache.stdenv.mkDerivation rec {
+flake.caching.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-bootloader-raw-image";
   version = "0.0.0";
 

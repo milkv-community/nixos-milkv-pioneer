@@ -9,13 +9,13 @@
 # For reference, see the `build_rv_kernel` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-flake.ccache.stdenv.mkDerivation rec {
+flake.caching.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-linux";
   version = "6.8";
 
   nativeBuildInputs = with pkgs; linuxPackages_6_8.kernel.nativeBuildInputs ++ [
     # breakpointHook
-    flake.ccache.stdenv-riscv64.cc
+    flake.caching.stdenv-riscv64.cc
   ];
 
   src = pkgs.fetchFromGitHub {
@@ -25,7 +25,7 @@ flake.ccache.stdenv.mkDerivation rec {
     hash = "sha256-zCrQwjFn09gyal511xLCxVP2+Uvlp1gsVta42PL8+zQ=";
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${flake.caching.stdenv-riscv64.cc.targetPrefix}";
   VENDOR = "sophgo";
   CHIP = "mango";
   KERNEL_VARIANT = "normal";

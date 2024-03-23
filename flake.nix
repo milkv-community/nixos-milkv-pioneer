@@ -35,8 +35,8 @@
       treefmtEval = eachSystem (system: inputs.treefmt-nix.lib.evalModule inputs.nixpkgs.legacyPackages.${system} ./treefmt.nix);
     in
     rec {
-      flake = eachSystemPkgs { } (pkgs: {
-        ccache = with pkgs; rec {
+      flake = eachSystemPkgs { } (pkgs: with pkgs; {
+        caching = rec {
           extraConfig = ''
             export CCACHE_MAXSIZE=20G
             export CCACHE_COMPILERCHECK=content
@@ -70,6 +70,11 @@
           stdenv-riscv64-embedded = stdenvAdapters.useMoldLinker (pkgsCross.riscv64-embedded.ccacheStdenv.override {
             inherit extraConfig;
           });
+        };
+        nonCaching = {
+          stdenv = stdenvAdapters.useMoldLinker stdenv;
+          stdenv-riscv64 = stdenvAdapters.useMoldLinker pkgsCross.riscv64.stdenv;
+          stdenv-riscv64-embedded = stdenvAdapters.useMoldLinker pkgsCross.riscv64-embedded.stdenv;
         };
       });
 
@@ -108,15 +113,15 @@
           cachingStdenvs = with pkgs; [
             # NOTE: The user will likely not have permissions to write to `/var/cache/ccache`
             # so just remove the ccache stdenvs from the shell environment.
-            flake.${system}.ccache.stdenv.cc
-            flake.${system}.ccache.stdenv-riscv64.cc
-            flake.${system}.ccache.stdenv-riscv64-embedded.cc
+            flake.${system}.caching.stdenv.cc
+            flake.${system}.caching.stdenv-riscv64.cc
+            flake.${system}.caching.stdenv-riscv64-embedded.cc
           ];
           nonCachingStdenvs = with pkgs; [
             # NOTE: Replace the removed ccache stdenvs with non-caching variants.
-            stdenv.cc
-            pkgsCross.riscv64.stdenv.cc
-            pkgsCross.riscv64-embedded.stdenv.cc
+            flake.${system}.nonCaching.stdenv.cc
+            flake.${system}.nonCaching.stdenv-riscv64.cc
+            flake.${system}.nonCaching.stdenv-riscv64-embedded.cc
           ];
         in
         {

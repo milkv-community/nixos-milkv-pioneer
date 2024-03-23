@@ -19,13 +19,13 @@
 # system will invoke this riscv64-embedded cross-toolchain on its own; we only need to set the
 # `GCC5_RISCV64_PREFIX`.
 
-flake.ccache.stdenv.mkDerivation rec {
+flake.caching.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-edk2";
   version = "0.0.0";
 
   nativeBuildInputs = with pkgs; [
     # breakpointHook
-    flake.ccache.stdenv-riscv64-embedded.cc
+    flake.caching.stdenv-riscv64-embedded.cc
     libuuid
     python3
   ];
@@ -100,7 +100,7 @@ flake.ccache.stdenv.mkDerivation rec {
     export WORKSPACE=$SG2042_BSP_EDKII_SRC_DIR
     export PACKAGES_PATH=$WORKSPACE/edk2:$WORKSPACE/edk2-platforms:$WORKSPACE/edk2-non-osi
     export EDK_TOOLS_PATH=$WORKSPACE/edk2/BaseTools
-    export GCC5_RISCV64_PREFIX=${flake.ccache.stdenv-riscv64-embedded.cc.targetPrefix}
+    export GCC5_RISCV64_PREFIX=${flake.caching.stdenv-riscv64-embedded.cc.targetPrefix}
 
     # NOTE: We must first clear the positional args inherited from Nix environment so that
     # "buildPhase" is not passed as a positional argument when sourcing `edk2/edksetup.sh` below,

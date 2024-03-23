@@ -9,13 +9,13 @@
 # For reference, see the `build_rv_sbi` function in `scripts/envsetup.sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-flake.ccache.stdenv.mkDerivation rec {
+flake.caching.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-opensbi";
   version = "0.0.0";
 
   nativeBuildInputs = with pkgs; [
     # breakpointHook
-    flake.ccache.stdenv-riscv64.cc
+    flake.caching.stdenv-riscv64.cc
     python3
   ];
 
@@ -26,7 +26,7 @@ flake.ccache.stdenv.mkDerivation rec {
     hash = "sha256-28dY49OM79vxRM5xDgomxbJzuV6/LIY35QsfWYmGCAU=";
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${flake.caching.stdenv-riscv64.cc.targetPrefix}";
   PLATFORM = "generic";
   SG2042_BSP_SBI_SRC_DIR = "/build/${src.repo}";
 

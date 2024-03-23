@@ -8,7 +8,7 @@
 # For reference, see the `build_rv_zsbl` function in `scripts/envsetup. sh`:
 #   https://github.com/sophgo/bootloader-riscv
 
-flake.ccache.stdenv.mkDerivation rec {
+flake.caching.stdenv.mkDerivation rec {
   pname = "milkv-pioneer-bsp-zsbl";
   version = "0.0.0";
 
@@ -17,7 +17,7 @@ flake.ccache.stdenv.mkDerivation rec {
 
   nativeBuildInputs = with pkgs; [
     # breakpointHook
-    flake.ccache.stdenv-riscv64.cc
+    flake.caching.stdenv-riscv64.cc
     bison
     flex
   ];
@@ -29,7 +29,7 @@ flake.ccache.stdenv.mkDerivation rec {
     hash = "sha256-zOlBM7mwz8FUM/BlzOxJmpI8LI/KcFOGXegvgiilbaM=";
   };
 
-  RISCV64_LINUX_CROSS_COMPILE = "${flake.ccache.stdenv-riscv64.cc.targetPrefix}";
+  RISCV64_LINUX_CROSS_COMPILE = "${flake.caching.stdenv-riscv64.cc.targetPrefix}";
   CHIP = "mango";
   CHIP_NUM = "single";
   KERNEL_VARIANT = "normal";
